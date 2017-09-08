@@ -1,4 +1,13 @@
-cocktail
-========
+# Projet L3 INFO: Gestion de cocktails
 
-A Symfony project created on September 7, 2017, 3:45 pm.
+### Lancer le projet
+
+````
+composer install
+bower install
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:update --force
+php bin/console server:run
+````
+
+need : php, mariadb, composer, bower
