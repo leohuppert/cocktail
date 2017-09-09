@@ -4,6 +4,8 @@
 
     <h1>Se connecter</h1>
 
+    <p><a href="{{ path('register') }}" class="btn btn-sm btn-secondary">Pas encore de compte ?</a></p>
+
     {% if error %}
 
         <div class="alert alert-danger">{{ error.messageKey | trans(error.messageData, 'security') }}</div>
