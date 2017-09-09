@@ -1,4 +1,8 @@
-# Projet L3 INFO: Gestion de cocktails
+# Projet Web L3 INFO 
+
+## Gestion de cocktails
+
+[![Build Status](https://travis-ci.com/leohuppert/cocktail.svg?token=CDJVs9W9oD9aREdu5nHQ&branch=master)](https://travis-ci.com/leohuppert/cocktail)
 
 ### Lancer le projet
 

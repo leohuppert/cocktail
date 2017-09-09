@@ -9,4 +9,4 @@ install:
   - composer install
 
 script:
-  - phpunit
+  - phpunit --colors --coverage-text
