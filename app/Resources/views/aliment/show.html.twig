@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Aliment</h1>
+    <h1>{{ aliment }}</h1>
 
-    <table>
+    <table class="table table-striped">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -12,6 +12,24 @@
             <tr>
                 <th>Name</th>
                 <td>{{ aliment.name }}</td>
+            </tr>
+            <tr>
+                <th>Sous-catégorie</th>
+                <td>
+                    {% for aliment in aliment.subAliments %}
+                        <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+                        {% if loop.index != loop.length %} /{% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th>Super-catégorie</th>
+                <td>
+                    {% for aliment in aliment.superAliments %}
+                        <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+                        {% if loop.index != loop.length %} /{% endif %}
+                    {% endfor %}
+                </td>
             </tr>
         </tbody>
     </table>

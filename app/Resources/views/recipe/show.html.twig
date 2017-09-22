@@ -25,7 +25,8 @@
                 <th>Aliments</th>
                 <td>
                     {% for aliment in recipe.aliments %}
-                        {{ aliment }}<br>
+                        <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+                        {% if loop.index != loop.length %} /{% endif %}
                     {% endfor %}
                 </td>
             </tr>

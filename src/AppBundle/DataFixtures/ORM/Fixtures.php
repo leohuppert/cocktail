@@ -67,7 +67,7 @@ class Fixtures extends Fixture
             $recipe->setIngredients($value['ingredients']);
             $recipe->setPreparation($value['preparation']);
 
-            foreach ($value as $aliment) {
+            foreach ($value['index'] as $aliment) {
                 $al = $manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $aliment));
                 if (!empty($al)) {
                     $recipe->addAliment($al[0]);
