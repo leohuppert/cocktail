@@ -3,6 +3,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Aliment;
+use AppBundle\Entity\Recipe;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\DataFixtures\Donnees;
@@ -55,6 +56,25 @@ class Fixtures extends Fixture
                     }
                 }
             }
+        }
+
+        $manager->flush();
+
+        // Les recettes
+        foreach (Donnees::$Recettes as $key => $value) {
+            $recipe = new Recipe();
+            $recipe->setName($value['titre']);
+            $recipe->setIngredients($value['ingredients']);
+            $recipe->setPreparation($value['preparation']);
+
+            foreach ($value as $aliment) {
+                $al = $manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $aliment));
+                if (!empty($al)) {
+                    $recipe->addAliment($al[0]);
+                }
+            }
+
+            $manager->persist($recipe);
         }
 
         $manager->flush();

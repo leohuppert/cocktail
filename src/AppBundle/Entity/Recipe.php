@@ -49,7 +49,7 @@ class Recipe
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Aliment")
      * @ORM\JoinTable(name="recipes_aliments",
      *     joinColumns={@ORM\JoinColumn(name="recipe_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="aliment_id", referencedColumnName="id", unique=true)})
+     *     inverseJoinColumns={@ORM\JoinColumn(name="aliment_id", referencedColumnName="id")})
      */
     private $aliments;
 
