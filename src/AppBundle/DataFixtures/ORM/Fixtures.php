@@ -3,31 +3,60 @@
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Aliment;
-use AppBundle\Entity\Recipe;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use AppBundle\DataFixtures\Donnees;
 
 class Fixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $recipe = new Recipe();
-        $recipe->setName('Vodka Red Bull');
-        $recipe->setIngredients('4cl Vodka, 20 cl Redbull');
-        $recipe->setPreparation('Mélange les deux ingrédients, t\'es con ou quoi ?');
+        // Ajout des entités aliment sans relations sous/super catégorie
+        foreach (Donnees::$Hierarchie as $key => $value) {
 
-        $aliment = new Aliment();
-        $aliment->setName('Red Bull');
+            if (empty($manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $key)))) {
+                $al = new Aliment();
+                $al->setName($key);
+                $manager->persist($al);
+            }
+        }
 
-        $aliment2 = new Aliment();
-        $aliment2->setName('Vodka');
+        $manager->flush();
 
-        $manager->persist($aliment);
-        $manager->persist($aliment2);
+        foreach (Donnees::$Hierarchie as $key => $value) {
 
-        $recipe->addAliment($aliment);
-        $recipe->addAliment($aliment2);
-        $manager->persist($recipe);
+            // Voir si sous catégorie
+            // si oui => trouver chaque aliment et l'ajouter comme sous-aliment
+            // Pareil pour les super-catégorie
+
+            $currentAliment = $manager->getRepository('AppBundle:Aliment')
+                ->findBy(array('name' => $key))[0];
+
+            // S'il y a des super catégories
+            if (isset($value['super-categorie']) && count($value['super-categorie']) > 0) {
+                foreach ($value['super-categorie'] as $super) {
+
+                    $alimentSuper = $manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $super));
+
+                    if (!empty($alimentSuper)) {
+                        $currentAliment->addSuperAliment($alimentSuper[0]);
+                    }
+                }
+            }
+
+            // S'il y a des sous catégories
+            if (isset($value['sous-categorie']) && count($value['sous-categorie']) > 0) {
+                foreach ($value['sous-categorie'] as $sous) {
+
+                    $alimentSous = $manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $sous));
+
+                    if (!empty($alimentSous)) {
+                        $currentAliment->addSubAliment($alimentSous[0]);
+                    }
+                }
+            }
+        }
+
         $manager->flush();
     }
 }

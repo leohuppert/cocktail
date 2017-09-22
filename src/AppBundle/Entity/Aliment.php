@@ -35,7 +35,7 @@ class Aliment
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Aliment")
      * @ORM\JoinTable(name="aliments_sub_aliments",
      *     joinColumns={@ORM\JoinColumn(name="aliment_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="sub_aliment_id", referencedColumnName="id", unique=true)})
+     *     inverseJoinColumns={@ORM\JoinColumn(name="sub_aliment_id", referencedColumnName="id")})
      */
     private $subAliments;
 
@@ -45,7 +45,7 @@ class Aliment
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Aliment")
      * @ORM\JoinTable(name="aliments_super_aliments",
      *     joinColumns={@ORM\JoinColumn(name="aliment_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="super_aliment_id", referencedColumnName="id", unique=true)})
+     *     inverseJoinColumns={@ORM\JoinColumn(name="super_aliment_id", referencedColumnName="id")})
      */
     private $superAliments;
 
