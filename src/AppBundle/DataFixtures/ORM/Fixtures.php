@@ -64,7 +64,7 @@ class Fixtures extends Fixture
         foreach (Donnees::$Recettes as $key => $value) {
             $recipe = new Recipe();
             $recipe->setName($value['titre']);
-            $recipe->setIngredients($value['ingredients']);
+            $recipe->setIngredients(str_replace('|', ", ", $value['ingredients']));
             $recipe->setPreparation($value['preparation']);
 
             foreach ($value['index'] as $aliment) {
