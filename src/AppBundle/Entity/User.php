@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -105,6 +106,21 @@ class User implements UserInterface
      * @ORM\Column(name="city", type="string", length=255, nullable=true)
      */
     private $city;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Recipe")
+     * @ORM\JoinTable(name="users_favorite_recipes",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="recipe_id", referencedColumnName="id", unique=true)})
+     */
+    private $favoriteRecipes;
+
+    public function __construct()
+    {
+        $this->favoriteRecipes = new ArrayCollection();
+    }
 
 
     /**
@@ -436,5 +452,41 @@ class User implements UserInterface
     {
         // TODO: Implement eraseCredentials() method.
     }
-}
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getFavoriteRecipes()
+    {
+        return $this->favoriteRecipes;
+    }
+
+    /**
+     * @param ArrayCollection $favoriteRecipes
+     */
+    public function setFavoriteRecipes(ArrayCollection $favoriteRecipes)
+    {
+        $this->favoriteRecipes = $favoriteRecipes;
+    }
+
+    /**
+     * @param Recipe $recipe
+     */
+    public function addFavoriteRecipe(Recipe $recipe)
+    {
+        if (!$this->favoriteRecipes->contains($recipe)) {
+            $this->favoriteRecipes->add($recipe);
+        }
+    }
+
+    /**
+     * @param Recipe $recipe
+     */
+    public function removeFavoriteRecipe(Recipe $recipe)
+    {
+        if ($this->favoriteRecipes->contains($recipe)) {
+            $this->favoriteRecipes->remove($recipe);
+        }
+    }
+
+}
