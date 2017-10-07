@@ -21,6 +21,32 @@ class DefaultController extends Controller
                 $session->set('favorites', array());
             }
         }
+        // L'utilisateur est connecté
+        else {
+
+            $sessionFavs = $this->get('session')->get('favorites');
+            $em = $this->getDoctrine()
+                ->getManager();
+
+            // On regarde s'il existe un table de recettes préférées en session et que des recettes ont été ajoutées
+            if ($sessionFavs !== null && !empty($sessionFavs)) {
+
+                foreach ($sessionFavs as $recipeId) {
+
+                    $recipe = $em->getRepository('AppBundle:Recipe')
+                        ->findBy(['id' => $recipeId])[0];
+
+                    if (!$this->getUser()->getFavoriteRecipes()->contains($recipe)) {
+                        $this->getUser()->addFavoriteRecipe($recipe);
+                    }
+                }
+
+                $em->flush();
+
+                // Destruction tableau session ?
+                $this->get('session')->remove('favorites');
+            }
+        }
 
         return $this->render('default/index.html.twig');
     }
