@@ -96,7 +96,7 @@ class RecipeController extends Controller
      * @param Recipe $recipe
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function removeSessionFavoriteRecipe(Recipe $recipe)
+    public function removeSessionFavoriteRecipe(Recipe $recipe, Request $request)
     {
         // On vérifie que l'utilisateur n'est pas connecté à l'aplication
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -115,6 +115,11 @@ class RecipeController extends Controller
                     }
                 }
             }
+        }
+
+        // Route qui a redirigé => favorites ; alors on redirige vers favorites
+        if (preg_match('/^.*\/recipe\/favorites/', $request->headers->get('referer'))) {
+            return $this->redirectToRoute('recipe_favorites');
         }
 
         return $this->redirectToRoute('recipe_show', array(
