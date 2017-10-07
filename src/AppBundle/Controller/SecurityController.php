@@ -20,7 +20,10 @@ class SecurityController extends Controller
     {
         $authenticationUtils = $this->get('security.authentication_utils');
 
+        // Erreur de logi s'il y en a une
         $error = $authenticationUtils->getLastAuthenticationError();
+
+        // Dernier username donné par l'utilisateur
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', [
@@ -50,6 +53,9 @@ class SecurityController extends Controller
                 ->getManager();
             $em->persist($user);
             $em->flush();
+
+            // Flash message
+            $this->addFlash('notice', 'Vous êtes maintenant enregistré !');
 
             return $this->redirectToRoute('homepage');
         }
