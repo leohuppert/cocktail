@@ -3,7 +3,11 @@
 {% block body %}
 
     <h1>Mes recettes préférées</h1>
-    <h5>Vous n'êtes pas connecté</h5>
+
+    {% if not is_granted('ROLE_USER') %}
+        <h5>Vous n'êtes pas connecté</h5>
+    {% endif %}
+
 
     <br>
 

@@ -172,8 +172,6 @@ class RecipeController extends Controller
 
             if ($this->get('session')->get('favorites') !== null) {
 
-                dump($this->get('session')->get('favorites'));
-
                 // On regarde si la recette se trouve dans les favoris
                 $isFavorite = in_array($recipe->getId(), $this->get('session')->get('favorites'));
             }
