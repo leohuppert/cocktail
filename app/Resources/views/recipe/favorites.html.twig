@@ -1,0 +1,26 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <h1>Mes recettes préférées</h1>
+    <h5>Vous n'êtes pas connecté</h5>
+
+    <br>
+
+    {% if favorites | length == 0 %}
+        <p>
+            Vous n'avez encore aucune recette préférée
+            <br>
+            <a href="{{ path('recipe_index') }}">Parcourir les recettes</a>
+        </p>
+    {% endif %}
+
+    <ul>
+        {% for recipe in favorites %}
+            <li>
+                <a href="{{ path('recipe_show', { id: recipe.id }) }}">{{ recipe }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

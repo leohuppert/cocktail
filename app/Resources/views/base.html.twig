@@ -25,11 +25,14 @@
                     <li class="nav-item {% if app.request.attributes.get('_route') == 'homepage' %}active{% endif %}">
                         <a class="nav-link" href="{{ path('homepage') }}">Accueil</a>
                     </li>
-                    <li class="nav-item {% if app.request.attributes.get('_route') starts with 'recipe' %}active{% endif %}">
+                    <li class="nav-item {% if app.request.attributes.get('_route') starts with 'recipe' and app.request.attributes.get('_route') != 'recipe_favorites' %}active{% endif %}">
                         <a class="nav-link" href="{{ path('recipe_index') }}">Recettes</a>
                     </li>
                     <li class="nav-item {% if app.request.attributes.get('_route') starts with 'aliment' %}active{% endif %}">
                         <a class="nav-link" href="{{ path('aliment_index') }}">Aliments</a>
+                    </li>
+                    <li class="nav-item {% if app.request.attributes.get('_route') == 'recipe_favorites' %}active{% endif %}">
+                        <a class="nav-link" href="{{ path('recipe_favorites') }}">Mes recettes préférées</a>
                     </li>
                 </ul>
 

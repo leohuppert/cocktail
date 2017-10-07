@@ -32,10 +32,103 @@ class RecipeController extends Controller
     }
 
     /**
+     * @Route("/favorites", name="recipe_favorites")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function showFavorites()
+    {
+        // Deux cas: connecté ou pas connecté
+        // Si connecté : favoris à charger de la BDD
+        // Pas connecté : session
+
+        $favorites = array();
+        $em = $this->getDoctrine()
+            ->getManager();
+
+        // Utilisateur non connecté => Session
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            if ($this->get('session')->get('favorites') !== null) {
+                foreach ($this->get('session')->get('favorites') as $recipeId) {
+
+                    $r = $em->getRepository('AppBundle:Recipe')
+                        ->findBy(array('id' => $recipeId))[0];
+                    $favorites[] = $r;
+                }
+            }
+        }
+
+        return $this->render(':recipe:favorites.html.twig', array(
+            'favorites' => $favorites,
+        ));
+    }
+
+    /**
+     * @Route("/add-session-favorite/{id}", name="recipe_add_session_favorite")
+     * @Method({"GET", "POST"})
+     * @param Recipe $recipe
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addSessionFavoriteRecipe(Recipe $recipe)
+    {
+        // On vérifie que l'utilisateur n'est pas connecté à l'aplication
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            // On vérifie l'existence du tableau de recettes préférées en session
+            if ($this->get('session')->get('favorites') !== null) {
+
+                // On vérifie que la recette n'est pas déjà dans les favoris
+                if (!in_array($recipe->getId(), $this->get('session')->get('favorites'))) {
+                    $tmp = $this->get('session')->get('favorites');
+                    $tmp[] = $recipe->getId();
+                    $this->get('session')->set('favorites', $tmp);
+                }
+            }
+        }
+
+        return $this->redirectToRoute('recipe_show', array(
+            'id' => $recipe->getId()
+        ));
+    }
+
+    /**
+     * @Route("/remove-session-favorite/{id}", name="recipe_remove_session_favorite")
+     * @Method({"GET", "POST"})
+     * @param Recipe $recipe
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function removeSessionFavoriteRecipe(Recipe $recipe)
+    {
+        // On vérifie que l'utilisateur n'est pas connecté à l'aplication
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            // On vérifie l'existence du tableau de recettes préférées en session
+            if ($this->get('session')->get('favorites') !== null) {
+
+                // On vérifie que la recette à supprimer est bien dans les favoris
+                if (in_array($recipe->getId(), $this->get('session')->get('favorites'))) {
+
+                    $tmp = $this->get('session')->get('favorites');
+
+                    if(($key = array_search($recipe->getId(), $tmp)) !== false) {
+                        unset($tmp[$key]);
+                        $this->get('session')->set('favorites', $tmp);
+                    }
+                }
+            }
+        }
+
+        return $this->redirectToRoute('recipe_show', array(
+            'id' => $recipe->getId(),
+        ));
+    }
+
+    /**
      * Creates a new recipe entity.
      *
      * @Route("/new", name="recipe_new")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function newAction(Request $request)
     {
@@ -53,7 +146,7 @@ class RecipeController extends Controller
 
         return $this->render('recipe/new.html.twig', array(
             'recipe' => $recipe,
-            'form' => $form->createView(),
+            'form'   => $form->createView(),
         ));
     }
 
@@ -67,9 +160,24 @@ class RecipeController extends Controller
     {
         $deleteForm = $this->createDeleteForm($recipe);
 
+        $isFavorite = false;
+
+        // Pas connecté
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            if ($this->get('session')->get('favorites') !== null) {
+
+                dump($this->get('session')->get('favorites'));
+
+                // On regarde si la recette se trouve dans les favoris
+                $isFavorite = in_array($recipe->getId(), $this->get('session')->get('favorites'));
+            }
+        }
+
         return $this->render('recipe/show.html.twig', array(
-            'recipe' => $recipe,
+            'recipe'      => $recipe,
             'delete_form' => $deleteForm->createView(),
+            'is_favorite' => $isFavorite,
         ));
     }
 
