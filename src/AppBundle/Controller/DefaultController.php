@@ -31,6 +31,8 @@ class DefaultController extends Controller
             // On regarde s'il existe un table de recettes préférées en session et que des recettes ont été ajoutées
             if ($sessionFavs !== null && !empty($sessionFavs)) {
 
+                $addedRecipes = array();
+
                 foreach ($sessionFavs as $recipeId) {
 
                     $recipe = $em->getRepository('AppBundle:Recipe')
@@ -38,6 +40,7 @@ class DefaultController extends Controller
 
                     if (!$this->getUser()->getFavoriteRecipes()->contains($recipe)) {
                         $this->getUser()->addFavoriteRecipe($recipe);
+                        $addedRecipes[] = $recipe;
                     }
                 }
 
@@ -45,6 +48,13 @@ class DefaultController extends Controller
 
                 // Destruction tableau session ?
                 $this->get('session')->remove('favorites');
+
+                $flashMessage = 'Recettes ajoutés aux favoris : ';
+                foreach ($addedRecipes as $recipe) {
+                    $flashMessage = $flashMessage . $recipe->getName() . ' ,';
+                }
+                $flashMessage = substr($flashMessage, 0, strlen($flashMessage) - 2);
+                $this->addFlash('notice', $flashMessage);
             }
         }
 
