@@ -49,11 +49,11 @@
         {% else %}
 
             {% if not is_favorite %}
-                <a href="" class="btn btn-primary btn-sm">
+                <a href="{{ path('recipe_add_user_favorite', { id: recipe.id }) }}" class="btn btn-primary btn-sm">
                     <i class="fa fa-star" aria-hidden="true"></i>&nbsp;Ajouter cette recette dans mes favoris
                 </a>
             {% else %}
-                <a href="" class="btn btn-danger btn-sm">
+                <a href="{{ path('recipe_remove_user_favorite', { id: recipe.id }) }}" class="btn btn-danger btn-sm">
                     <i class="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;Supprimer cette recette de mes favoris
                 </a>
             {% endif %}

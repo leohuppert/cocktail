@@ -23,7 +23,12 @@
         {% for recipe in favorites %}
             <li>
                 <a href="{{ path('recipe_show', { id: recipe.id }) }}" class="btn btn-sm btn-primary">{{ recipe }}</a>
-                <a href="{{ path('recipe_remove_session_favorite', { id: recipe.id }) }}" class="btn btn-sm btn-danger">Supprimer</a>
+
+                {% if not is_granted('ROLE_USER') %}
+                    <a href="{{ path('recipe_remove_session_favorite', { id: recipe.id }) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                {% else %}
+                    <a href="{{ path('recipe_remove_user_favorite', { id: recipe.id }) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

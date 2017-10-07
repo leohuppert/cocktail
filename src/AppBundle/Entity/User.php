@@ -485,7 +485,7 @@ class User implements UserInterface
     public function removeFavoriteRecipe(Recipe $recipe)
     {
         if ($this->favoriteRecipes->contains($recipe)) {
-            $this->favoriteRecipes->remove($recipe);
+            $this->favoriteRecipes->removeElement($recipe);
         }
     }
 

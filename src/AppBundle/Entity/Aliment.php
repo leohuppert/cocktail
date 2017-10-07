@@ -125,7 +125,7 @@ class Aliment
     public function removeSubAliment(Aliment $aliment)
     {
         if ($this->subAliments->contains($aliment)) {
-            $this->subAliments->remove($aliment);
+            $this->subAliments->removeElement($aliment);
         }
     }
 
@@ -161,7 +161,7 @@ class Aliment
     public function removeSuperAliment(Aliment $aliment)
     {
         if ($this->superAliments->contains($aliment)) {
-            $this->superAliments->remove($aliment);
+            $this->superAliments->removeElement($aliment);
         }
     }
 

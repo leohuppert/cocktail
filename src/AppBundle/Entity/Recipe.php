@@ -177,7 +177,7 @@ class Recipe
     public function removeAliment(Aliment $aliment)
     {
         if ($this->aliments->contains($aliment)) {
-            $this->aliments->remove($aliment);
+            $this->aliments->removeElement($aliment);
         }
     }
 

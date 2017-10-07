@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Recipe;
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +59,8 @@ class RecipeController extends Controller
         }
         // Utilisateur connecté => BDD
         else {
-            // Traitement
+
+            $favorites = $this->getUser()->getFavoriteRecipes();
         }
 
         return $this->render(':recipe:favorites.html.twig', array(
@@ -132,6 +134,63 @@ class RecipeController extends Controller
     }
 
     /**
+     * @Route("/add-user-favorite/{id}", name="recipe_add_user_favorite")
+     * @Method({"GET", "POST"})
+     * @param Recipe $recipe
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addUserFavoriteRecipe(Recipe $recipe)
+    {
+        // On vérifie que l'utilisateur est bien connecté
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            $em = $this->getDoctrine()
+                ->getManager();
+
+            /* @var User $user */
+            $user = $this->getUser();
+            $user->addFavoriteRecipe($recipe);
+
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('recipe_show', array(
+            'id' => $recipe->getId(),
+        ));
+    }
+
+    /**
+     * @Route("/remove-user-favorite/{id}", name="recipe_remove_user_favorite")
+     * @Method({"GET", "POST"})
+     * @param Recipe $recipe
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function removeUserFavoriteRecipe(Recipe $recipe, Request $request)
+    {
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            $em = $this->getDoctrine()
+                ->getManager();
+
+            /* @var User $user */
+            $user = $this->getUser();
+            $user->removeFavoriteRecipe($recipe);
+
+            $em->flush();
+        }
+
+        // Route qui a redirigé => favorites ; alors on redirige vers favorites
+        if (preg_match('/^.*\/recipe\/favorites/', $request->headers->get('referer'))) {
+            return $this->redirectToRoute('recipe_favorites');
+        }
+
+        return $this->redirectToRoute('recipe_show', array(
+            'id' => $recipe->getId(),
+        ));
+    }
+
+    /**
      * Creates a new recipe entity.
      *
      * @Route("/new", name="recipe_new")
@@ -179,6 +238,10 @@ class RecipeController extends Controller
                 // On regarde si la recette se trouve dans les favoris
                 $isFavorite = in_array($recipe->getId(), $this->get('session')->get('favorites'));
             }
+        }
+        // Connecté
+        else {
+            $isFavorite = $this->getUser()->getFavoriteRecipes()->contains($recipe);
         }
 
         return $this->render('recipe/show.html.twig', array(
