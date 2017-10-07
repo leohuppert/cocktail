@@ -56,6 +56,10 @@ class RecipeController extends Controller
                 }
             }
         }
+        // Utilisateur connecté => BDD
+        else {
+            // Traitement
+        }
 
         return $this->render(':recipe:favorites.html.twig', array(
             'favorites' => $favorites,
