@@ -13,9 +13,9 @@
 
     {% if favorites | length == 0 %}
         <p>
-            Vous n'avez encore aucune recette préférée
+            Vous n'avez pas enregistré de recettes
             <br>
-            <a href="{{ path('recipe_index') }}">Parcourir les recettes</a>
+            <a href="{{ path('recipe_index') }}" class="btn btn-sm btn-primary">Parcourir les recettes</a>
         </p>
     {% endif %}
 
