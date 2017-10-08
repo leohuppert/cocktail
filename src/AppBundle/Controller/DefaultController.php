@@ -46,10 +46,11 @@ class DefaultController extends Controller
 
                 $em->flush();
 
-                // Destruction tableau session ?
+                // Destruction tableau session
                 $this->get('session')->remove('favorites');
 
-                $flashMessage = 'Recettes ajoutés aux favoris : ';
+                // Message flash pour indiquer les recettes ajoutés depuis la session
+                $flashMessage = 'Recette(s) ajoutée(s) aux favoris : ';
                 foreach ($addedRecipes as $recipe) {
                     $flashMessage = $flashMessage . $recipe->getName() . ' ,';
                 }

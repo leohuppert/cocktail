@@ -99,7 +99,8 @@ class RecipeController extends Controller
     /**
      * @Route("/remove-session-favorite/{id}", name="recipe_remove_session_favorite")
      * @Method({"GET", "POST"})
-     * @param Recipe $recipe
+     * @param Recipe  $recipe
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function removeSessionFavoriteRecipe(Recipe $recipe, Request $request)
@@ -223,6 +224,8 @@ class RecipeController extends Controller
      *
      * @Route("/{id}", name="recipe_show")
      * @Method("GET")
+     * @param Recipe $recipe
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Recipe $recipe)
     {
@@ -256,6 +259,9 @@ class RecipeController extends Controller
      *
      * @Route("/{id}/edit", name="recipe_edit")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @param Recipe $recipe
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, Recipe $recipe)
     {
@@ -270,8 +276,8 @@ class RecipeController extends Controller
         }
 
         return $this->render('recipe/edit.html.twig', array(
-            'recipe' => $recipe,
-            'edit_form' => $editForm->createView(),
+            'recipe'      => $recipe,
+            'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -281,6 +287,9 @@ class RecipeController extends Controller
      *
      * @Route("/{id}", name="recipe_delete")
      * @Method("DELETE")
+     * @param Request $request
+     * @param Recipe  $recipe
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteAction(Request $request, Recipe $recipe)
     {
