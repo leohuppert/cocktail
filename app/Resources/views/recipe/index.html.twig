@@ -5,65 +5,75 @@
         <h1>Liste des recettes</h1>
 
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="Recherche recettes" v-model="search">
+            <input type="text" class="form-control" placeholder="Rechercher une recette..." v-model="search">
         </div>
 
         <div class="row">
 
-            {#{% for recipe in recipes %}
-                <div class="col-lg-4">
-                    <a href="{{ path('recipe_show', { 'id': recipe.id }) }}">{{ recipe.name }}</a>
-                </div>
-            {% endfor %}#}
+            {#<div class="col-lg-4" v-for="recipe in filteredList">
+                <a v-bind:href="recipe.link">${ recipe.title }</a>
+            </div>#}
 
-            <div class="col-lg-4" v-for="recipe in filteredList">
-                ${ recipe.title }
+            <table class="table" style="display: none;">
+                <thead>
+                    <th>Nom</th>
+                </thead>
 
-                {#TODO : Utiliser FOSJSroutingBundle pour générer un lien pour chaque recette.#}
-            </div>
+                <tbody v-for="recipe in filteredList">
+                    <tr>
+                        <td>${ recipe.title }</td>
+                        <td><a v-bind:href="recipe.link">Voir</a></td>
+                    </tr>
+                </tbody>
+            </table>
 
         </div>
     </div>
 
-    {% endblock %}
+{% endblock %}
 
     {% block javascripts %}
 
-    {{ parent() }}
+        {{ parent() }}
 
-    <script src="https://unpkg.com/vue@2.4.4/dist/vue.js"></script>
+        <script src="https://unpkg.com/vue@2.4.4/dist/vue.js"></script>
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
-    <script>
+        <script>
 
-        class Recipe {
-            constructor(id, title) {
-                this.id = id;
-                this.title = title;
-            }
-        }
-
-        let recipes = [];
-
-        {% for recipe in recipes %}
-
-        recipes.push(new Recipe({{ recipe.id }}, '{{ recipe.name }}'));
-
-        {% endfor %}
-
-        const app = new Vue({
-            delimiters: ['${', '}'],
-            el: '#app',
-            data: {
-                search: '',
-                recipeList: recipes,
-            },
-            computed: {
-                filteredList() {
-                    return this.recipeList.filter(recipe => recipe.title.toLowerCase().includes(this.search.toLowerCase()));
+            class Recipe {
+                constructor(id, title) {
+                    this.id = id;
+                    this.title = title;
+                    this.link = Routing.generate('recipe_show', {id: this.id});
                 }
             }
-        })
 
-    </script>
+            let recipes = [];
 
-{% endblock %}
+            {% for recipe in recipes %}
+
+            recipes.push(new Recipe({{ recipe.id }}, '{{ recipe.name }}'));
+
+            {% endfor %}
+
+            document.querySelector('table').style.display = '';
+
+            const app = new Vue({
+                delimiters: ['${', '}'],
+                el: '#app',
+                data: {
+                    search: '',
+                    recipeList: recipes,
+                },
+                computed: {
+                    filteredList() {
+                        return this.recipeList.filter(recipe => recipe.title.toLowerCase().includes(this.search.toLowerCase()));
+                    }
+                }
+            })
+
+        </script>
+
+    {% endblock %}

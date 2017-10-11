@@ -222,7 +222,7 @@ class RecipeController extends Controller
     /**
      * Finds and displays a recipe entity.
      *
-     * @Route("/{id}", name="recipe_show")
+     * @Route("/{id}", name="recipe_show", options={"expose" = true})
      * @Method("GET")
      * @param Recipe $recipe
      * @return \Symfony\Component\HttpFoundation\Response
