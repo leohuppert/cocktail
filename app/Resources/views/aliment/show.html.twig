@@ -3,48 +3,41 @@
 {% block body %}
     <h1>{{ aliment }}</h1>
 
+    <ol class="breadcrumb">
+        {% for super in super_aliments %}
+            <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
+        {% endfor %}
+
+        <li class="breadcrumb-item active">{{ aliment }}</li>
+    </ol>
+
     <table class="table table-striped">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ aliment.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ aliment.name }}</td>
-            </tr>
-            <tr>
-                <th>Sous-catégorie</th>
-                <td>
-                    {% for aliment in aliment.subAliments %}
-                        <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
-                        {% if loop.index != loop.length %} /{% endif %}
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <th>Super-catégorie</th>
-                <td>
-                    {% for aliment in aliment.superAliments %}
-                        <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
-                        {% if loop.index != loop.length %} /{% endif %}
-                    {% endfor %}
-                </td>
-            </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ aliment.name }}</td>
+        </tr>
+        <tr>
+            <th>Sous-catégorie</th>
+            <td>
+                {% for aliment in aliment.subAliments %}
+                    <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+                    {% if loop.index != loop.length %} /{% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Super-catégorie</th>
+            <td>
+                {% for aliment in aliment.superAliments %}
+                    <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+                    {% if loop.index != loop.length %} /{% endif %}
+                {% endfor %}
+            </td>
+        </tr>
         </tbody>
     </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('aliment_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('aliment_edit', { 'id': aliment.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <a href="{{ path('aliment_index') }}" class="btn btn-sm btn-primary">Retourner sur la liste des aliments</a>
+
 {% endblock %}
