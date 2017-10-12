@@ -6,34 +6,15 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for aliment in aliments %}
             <tr>
-                <td><a href="{{ path('aliment_show', { 'id': aliment.id }) }}">{{ aliment.id }}</a></td>
-                <td>{{ aliment.name }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('aliment_show', { 'id': aliment.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('aliment_edit', { 'id': aliment.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
+                <td><a href="{{ path('aliment_show', { 'id': aliment.id }) }}">{{ aliment }}</a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('aliment_new') }}">Create a new aliment</a>
-        </li>
-    </ul>
 {% endblock %}
