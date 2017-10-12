@@ -12,14 +12,16 @@
 
             <table class="table" style="display: none;">
                 <thead>
+                <tr>
                     <th>Nom</th>
+                </tr>
                 </thead>
 
                 <tbody v-for="recipe in filteredList">
-                    <tr>
-                        <td>${ recipe.title }</td>
-                        <td><a v-bind:href="recipe.link">Voir</a></td>
-                    </tr>
+                <tr>
+                    <td>${ recipe.title }</td>
+                    <td><a v-bind:href="recipe.link">Voir</a></td>
+                </tr>
                 </tbody>
             </table>
 
