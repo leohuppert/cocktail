@@ -42,6 +42,10 @@ class AlimentController extends Controller
     public function showAction(Aliment $aliment)
     {
         $superAliments = $this->getSuperAliments($aliment);
+        //dump($superAliments);die();
+
+        //$superAliments = $this->getAriane($superAliments);
+        //dump($superAliments);die();
 
         return $this->render('aliment/show.html.twig', array(
             'aliment'        => $aliment,
@@ -56,11 +60,64 @@ class AlimentController extends Controller
      */
     private function getSuperAliments(Aliment $aliment, array $res = array())
     {
-        if ($aliment->getSuperAliments()->count() === 0) {
-            return $res;
+        $superAliments = $aliment->getSuperAliments();
+
+        switch ($superAliments->count()) {
+
+            case 0:
+                return $res;
+
+            case 1:
+                $res[$aliment->getName()] = $superAliments->first();
+                return $this->getSuperAliments($superAliments->first(), $res);
+
+            default:
+                $arr = array();
+
+                foreach ($superAliments as $key => $super) {
+                    $res[$aliment->getName()][$key] = $super;
+                    $arr[] = $this->getSuperAliments($super);
+                }
+
+                for ($i = 0; $i < count($arr); $i++) {
+                    $res = array_merge($res, $arr[$i]);
+                }
+                return $res;
+        }
+    }
+
+    /**
+     * Should return an array containing all the "fil d'ariane" for an aliment.
+     *
+     * @param array $superAliments
+     * @return array
+     */
+    private function getAriane(array $superAliments)
+    {
+        $res = array();
+        $counter = 1;
+        foreach ($superAliments as $aliment => $supers) { // while (isset($supers->getSuperAliments()))
+            if (is_array($supers)) {
+                $counter *= count($supers);
+                $arr = array();
+
+                for ($i = 0; $i < $counter; $i++) {
+                    for($j = 0; $j < count($res); $j++) {
+                        $arr[] = $res[$j]; // not bad, but not good either
+                    }
+
+                    $arr[$i][] = $supers[$i]->getName(); //good ?
+                }
+
+                $res = $arr;
+
+            } else {
+                for ($i = 0; $i < $counter; $i++) {
+                    $res[$i][] = $supers->getName(); // mauvais, voir avec l'idée du while plus haut
+                }
+            }
         }
 
-        $res[] = $aliment->getSuperAliments()[0];
-        return $this->getSuperAliments($aliment->getSuperAliments()[0], $res);
+        return $res;
     }
 }

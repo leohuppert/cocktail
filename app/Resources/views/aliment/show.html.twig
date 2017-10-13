@@ -5,7 +5,13 @@
 
     <ol class="breadcrumb">
         {% for super in super_aliments %}
-            <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
+            {% if super is iterable %}
+                {% for s in super %}
+                    <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: s.id }) }}">{{ s }}</a></li>
+                {% endfor %}
+            {% else %}
+                <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
+            {% endif %}
         {% endfor %}
 
         <li class="breadcrumb-item active">{{ aliment }}</li>
