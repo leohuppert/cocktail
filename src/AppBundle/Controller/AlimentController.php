@@ -43,7 +43,7 @@ class AlimentController extends Controller
     public function showAction(Aliment $aliment)
     {
         $superAliments = $this->getAriane($this->getSuperAliments($aliment));
-
+        
         return $this->render('aliment/show.html.twig', array(
             'aliment'        => $aliment,
             'super_aliments' => $superAliments,
@@ -100,12 +100,12 @@ class AlimentController extends Controller
                     if (isset($res[$cpt])) {
                         $arr[$i] = $res[$cpt];
                     }
-                    $arr[$i][] = $super[$i]->getName();
+                    $arr[$i][] = $super[$i];
                 }
                 $res = $arr;
             } else {
-                $res[$cpt][] = $super->getName();
-                if ($super == 'Aliment') {
+                $res[$cpt][] = $super;
+                if ($super->getName() === "Aliment") {
                     $cpt++;
                 }
             }
