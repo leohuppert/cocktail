@@ -5,7 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Aliment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Aliment controller.
@@ -41,15 +42,11 @@ class AlimentController extends Controller
      */
     public function showAction(Aliment $aliment)
     {
-        $superAliments = $this->getSuperAliments($aliment);
-        //dump($superAliments);die();
-
-        //$superAliments = $this->getAriane($superAliments);
-        //dump($superAliments);die();
+        $superAliments = $this->getAriane($this->getSuperAliments($aliment));
 
         return $this->render('aliment/show.html.twig', array(
             'aliment'        => $aliment,
-            'super_aliments' => array_reverse($superAliments),
+            'super_aliments' => $superAliments,
         ));
     }
 
@@ -95,27 +92,27 @@ class AlimentController extends Controller
     private function getAriane(array $superAliments)
     {
         $res = array();
-        $counter = 1;
-        foreach ($superAliments as $aliment => $supers) { // while (isset($supers->getSuperAliments()))
-            if (is_array($supers)) {
-                $counter *= count($supers);
-                $arr = array();
-
-                for ($i = 0; $i < $counter; $i++) {
-                    for($j = 0; $j < count($res); $j++) {
-                        $arr[] = $res[$j]; // not bad, but not good either
+        $arr = array();
+        $cpt = 0;
+        foreach ($superAliments as $key => $super) {
+            if (is_array($super)) {
+                for ($i = 0; $i < count($super); $i++) {
+                    if (isset($res[$cpt])) {
+                        $arr[$i] = $res[$cpt];
                     }
-
-                    $arr[$i][] = $supers[$i]->getName(); //good ?
+                    $arr[$i][] = $super[$i]->getName();
                 }
-
                 $res = $arr;
-
             } else {
-                for ($i = 0; $i < $counter; $i++) {
-                    $res[$i][] = $supers->getName(); // mauvais, voir avec l'idée du while plus haut
+                $res[$cpt][] = $super->getName();
+                if ($super == 'Aliment') {
+                    $cpt++;
                 }
             }
+        }
+
+        foreach ($res as $key => $re) {
+            $res[$key] = array_reverse($re);
         }
 
         return $res;
