@@ -42,8 +42,8 @@ class AlimentController extends Controller
      */
     public function showAction(Aliment $aliment)
     {
-        $superAliments = $this->getAriane($this->getSuperAliments($aliment));
-        
+        $superAliments = $this->getBreadcrumb($this->getSuperAliments($aliment));
+
         return $this->render('aliment/show.html.twig', array(
             'aliment'        => $aliment,
             'super_aliments' => $superAliments,
@@ -51,6 +51,9 @@ class AlimentController extends Controller
     }
 
     /**
+     * Returns an array filled with the SuperAliment tree for a single Aliment
+     * @TODO: if two SuperAliments have the same SuperAliment, add only one of them. See how to manage that.
+     *
      * @param Aliment $aliment
      * @param array $res
      * @return array
@@ -84,12 +87,12 @@ class AlimentController extends Controller
     }
 
     /**
-     * Should return an array containing all the "fil d'ariane" for an aliment.
+     * Returns an array filled with every breadcrumb possible
      *
      * @param array $superAliments
      * @return array
      */
-    private function getAriane(array $superAliments)
+    private function getBreadcrumb(array $superAliments)
     {
         $res = array();
         $arr = array();
