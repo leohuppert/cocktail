@@ -51,8 +51,7 @@ class AlimentController extends Controller
     }
 
     /**
-     * Returns an array filled with the SuperAliment tree for a single Aliment
-     * @TODO: if two SuperAliments have the same SuperAliment, add only one of them. See how to manage that.
+     * Returns an array filled with the SuperAliment tree for a single Aliment.
      *
      * @param Aliment $aliment
      * @param array $res
@@ -68,16 +67,18 @@ class AlimentController extends Controller
                 return $res;
 
             case 1:
-                $res[$aliment->getName()] = $superAliments->first();
+                $res[] = $superAliments->first();
                 return $this->getSuperAliments($superAliments->first(), $res);
 
             default:
                 $arr = array();
+                $tmp = array();
 
                 foreach ($superAliments as $key => $super) {
-                    $res[$aliment->getName()][$key] = $super;
+                    $tmp[$key] = $super;
                     $arr[] = $this->getSuperAliments($super);
                 }
+                $res[] = $tmp;
 
                 for ($i = 0; $i < count($arr); $i++) {
                     $res = array_merge($res, $arr[$i]);
@@ -87,7 +88,7 @@ class AlimentController extends Controller
     }
 
     /**
-     * Returns an array filled with every breadcrumb possible
+     * Returns an array filled with every breadcrumb possible.
      *
      * @param array $superAliments
      * @return array
