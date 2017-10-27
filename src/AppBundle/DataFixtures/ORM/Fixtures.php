@@ -8,8 +8,20 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\DataFixtures\Donnees;
 
+/**
+ * Class Fixtures
+ * Permet de peupler la base de données
+ * @package AppBundle\DataFixtures\ORM
+ */
 class Fixtures extends Fixture
 {
+    /* Source : https://stackoverflow.com/a/3373364 */
+    const UNWANTED_ARRAY = array('Š'=>'S', 'š'=>'s', 'Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+        'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U',
+        'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss', 'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c',
+        'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o',
+        'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y');
+
     public function load(ObjectManager $manager)
     {
         // Ajout des entités aliment sans relations sous/super catégorie
@@ -37,7 +49,8 @@ class Fixtures extends Fixture
             if (isset($value['super-categorie']) && count($value['super-categorie']) > 0) {
                 foreach ($value['super-categorie'] as $super) {
 
-                    $alimentSuper = $manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $super));
+                    $alimentSuper = $manager->getRepository('AppBundle:Aliment')
+                        ->findBy(array('name' => $super));
 
                     if (!empty($alimentSuper)) {
                         $currentAliment->addSuperAliment($alimentSuper[0]);
@@ -49,7 +62,8 @@ class Fixtures extends Fixture
             if (isset($value['sous-categorie']) && count($value['sous-categorie']) > 0) {
                 foreach ($value['sous-categorie'] as $sous) {
 
-                    $alimentSous = $manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $sous));
+                    $alimentSous = $manager->getRepository('AppBundle:Aliment')
+                        ->findBy(array('name' => $sous));
 
                     if (!empty($alimentSous)) {
                         $currentAliment->addSubAliment($alimentSous[0]);
@@ -67,8 +81,20 @@ class Fixtures extends Fixture
             $recipe->setIngredients(str_replace('|', ", ", $value['ingredients']));
             $recipe->setPreparation($value['preparation']);
 
+            // Photo
+            $pictureName = strtr($value['titre'], self::UNWANTED_ARRAY);
+            $pictureName = str_replace(' ', '_', $pictureName);
+            $pictureName = ucfirst(strtolower($pictureName));
+            $pictureName = preg_replace('/[^a-zA-Z0-9\/_|+ .-]/', '', $pictureName);
+            $pictureName .= '.jpg';
+
+            file_exists('web/assets/pictures/' . $pictureName) ? $recipe->setPicture($pictureName) : $recipe->setPicture('default.png');
+
+
             foreach ($value['index'] as $aliment) {
-                $al = $manager->getRepository('AppBundle:Aliment')->findBy(array('name' => $aliment));
+                $al = $manager->getRepository('AppBundle:Aliment')
+                    ->findBy(array('name' => $aliment));
+
                 if (!empty($al)) {
                     $recipe->addAliment($al[0]);
                 }

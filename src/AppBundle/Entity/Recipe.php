@@ -53,6 +53,15 @@ class Recipe
      */
     private $aliments;
 
+    /**
+     * Le chemin de la photo de la recette, s'il y en a
+     *
+     * @var string
+     *
+     * @ORM\Column(name="picture", type="string", length=255, nullable=true)
+     */
+    private $picture;
+
 
     /**
      * Recipe constructor.
@@ -179,6 +188,22 @@ class Recipe
         if ($this->aliments->contains($aliment)) {
             $this->aliments->removeElement($aliment);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
+
+    /**
+     * @param string $picture
+     */
+    public function setPicture(string $picture)
+    {
+        $this->picture = $picture;
     }
 
     /**
