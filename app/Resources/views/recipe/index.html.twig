@@ -101,7 +101,7 @@
 
         {% for recipe in recipes %}
 
-            recipes.push(new Recipe({{ recipe.id }}, '{{ recipe.name }}', '{{ recipe.picture }}'));
+            recipes.push(new Recipe({{ recipe.id }}, `{{ recipe.name | raw }}`, `{{ recipe.picture }}`));
 
         {% endfor %}
 
