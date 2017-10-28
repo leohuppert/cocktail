@@ -8,25 +8,67 @@
             <input type="text" class="form-control" placeholder="Rechercher une recette..." v-model="search">
         </div>
 
-        <div class="row">
 
-            <table class="table" style="display: none;">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                </tr>
-                </thead>
-
-                <tbody v-for="recipe in filteredList">
-                <tr>
-                    <td>${ recipe.title }</td>
-                    <td><a v-bind:href="recipe.link">Voir</a></td>
-                </tr>
-                </tbody>
-            </table>
-
+        <div class="wrapper">
+            <div class="cocktail" v-for="recipe in filteredList">
+                <a v-bind:href="recipe.link" {#data-toggle="tooltip" data-placement="top"#} v-bind:title="recipe.title">
+                    <img {#class="img-thumbnail"#} v-bind:src="recipe.picture">
+                    ${ recipe.shortTitle }
+                </a>
+            </div>
         </div>
     </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+
+        #app {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1080px;
+            justify-content: center;
+        }
+
+        .cocktail {
+            /*height: 250px;
+            width: 250px;
+            border: solid black 1px;*/
+            width: 200px;
+            margin: 10px;
+            padding: 5px;
+            box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 6px, rgba(0, 0, 0, 0.117647) 0 1px 4px;
+            transition: .1s all ease-in-out;
+        }
+
+        .cocktail:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+
+        .cocktail img {
+            height: 150px;
+            max-width: 150px;
+        }
+
+        .cocktail a {
+            text-decoration: none;
+            display: flex;
+            flex-direction:column;
+            align-items: center;
+        }
+
+    </style>
 
 {% endblock %}
 
@@ -40,11 +82,18 @@
 
     <script>
 
+        // Activation des tooltips Bootstrap
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
         class Recipe {
-            constructor(id, title) {
+            constructor(id, title, picture) {
                 this.id = id;
                 this.title = title;
+                this.picture = '/assets/pictures/' + picture;
                 this.link = Routing.generate('recipe_show', {id: this.id});
+                this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
             }
         }
 
@@ -52,11 +101,11 @@
 
         {% for recipe in recipes %}
 
-        recipes.push(new Recipe({{ recipe.id }}, '{{ recipe.name }}'));
+            recipes.push(new Recipe({{ recipe.id }}, '{{ recipe.name }}', '{{ recipe.picture }}'));
 
         {% endfor %}
 
-        document.querySelector('table').style.display = '';
+        // document.querySelector('table').style.display = '';
 
         const app = new Vue({
             delimiters: ['${', '}'],
@@ -70,7 +119,7 @@
                     return this.recipeList.filter(recipe => recipe.title.toLowerCase().includes(this.search.toLowerCase()));
                 }
             }
-        })
+        });
 
     </script>
 
