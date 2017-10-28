@@ -34,6 +34,11 @@
                     <li class="nav-item {% if app.request.attributes.get('_route') == 'recipe_favorites' %}active{% endif %}">
                         <a class="nav-link" href="{{ path('recipe_favorites') }}">Mes recettes préférées</a>
                     </li>
+                    {% if is_granted('ROLE_USER') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('profile_edit', { id: app.user.id }) }}">Mes infos</a>
+                        </li>
+                    {% endif %}
                 </ul>
 
                 <span class="navbar-text">
@@ -47,6 +52,15 @@
         </nav>
 
         <div class="container">
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+
             {% for message in app.flashes('notice') %}
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

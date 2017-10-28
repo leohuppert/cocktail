@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,5 +64,47 @@ class SecurityController extends Controller
         return $this->render('security/register.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return Response
+     *
+     * @Route("/profile/{id}", name="profile_edit")
+     * @Method({"GET","POST"})
+     */
+    public function editUserAction(Request $request, User $user): Response
+    {
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            // TODO: Verif id
+            if ($this->getUser() !== $user) {
+                $this->addFlash('error', 'Vous ne pouvez pas accéder à cette page');
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            $form = $this->createForm('AppBundle\Form\EditUserType', $user);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->getDoctrine()
+                    ->getManager()
+                    ->flush();
+
+                $this->addFlash('notice', 'Vos informations ont bien été mises à jour !');
+
+                return $this->redirectToRoute('homepage');
+            }
+
+            return $this->render(':security:edit.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
+
+        $this->addFlash('error', 'Connectez-vous pour accéder à cette page');
+
+        return $this->redirectToRoute('homepage');
     }
 }
