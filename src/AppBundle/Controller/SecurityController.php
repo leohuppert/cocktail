@@ -4,8 +4,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -89,9 +91,19 @@ class SecurityController extends Controller
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->getDoctrine()
-                    ->getManager()
-                    ->flush();
+
+                try {
+                    $this->getDoctrine()
+                        ->getManager()
+                        ->flush();
+                } catch (UniqueConstraintViolationException $exception) {
+                    // On regarde si un utilisateur a le même nom d'utilisateur
+                    $this->addFlash('error', 'Un utilisateur a déjà cet identifiant.');
+
+                    return $this->redirectToRoute('profile_edit', [
+                        'id' => $this->getUser()->getId()
+                    ]);
+                }
 
                 $this->addFlash('notice', 'Vos informations ont bien été mises à jour !');
 
