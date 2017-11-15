@@ -42,7 +42,6 @@ class AlimentController extends Controller
      */
     public function showAction(Aliment $aliment)
     {
-        $sa = $this->getSuperAliments($aliment);
         $superAliments = $this->getBreadcrumb($aliment);
 
         return $this->render('aliment/show.html.twig', array(
@@ -59,16 +58,16 @@ class AlimentController extends Controller
      */
     private function getBreadcrumb(Aliment $aliment)
     {
-        $this->get('session')->set('breadcrumb', array(0 => 251));
-
         $sessionBreadcrumb = $this->get('session')
             ->get('breadcrumb');
 
         // si un fil d'ariane est en session
         if ($sessionBreadcrumb !== null) {
+
             return $this->getSessionBreadcrumb($aliment, $sessionBreadcrumb);
         } else {
-            return $this->getDefaultBreadcrumb($aliment);
+
+            return array_reverse($this->getDefaultBreadcrumb($aliment));
         }
     }
 
@@ -78,28 +77,28 @@ class AlimentController extends Controller
             ->getManager();
 
         $sessionAliment = $em->getRepository('AppBundle\Entity\Aliment')
-            ->findBy(array('id' => $sessionBreadcrumb[count($sessionBreadcrumb) - 1]))[0];
+            ->findBy(array('id' => end($sessionBreadcrumb)))[0];
 
         // Cas $sessionAliment = un superAliment de l'aliment en cours
         if ($aliment->getSuperAliments()->contains($sessionAliment)) {
             $sessionBreadcrumb[] = $aliment->getId();
             $this->get('session')->set('breadcrumb', $sessionBreadcrumb);
 
-            return $this->buildBreadcrumb($sessionBreadcrumb);
+            return $sessionBreadcrumb;
 
             // Cas $sessionAliment = un subAliment de l'aliment en cours
         } else if ($aliment->getSubAliments()->contains($sessionAliment)) {
             unset($sessionBreadcrumb[count($sessionBreadcrumb) - 1]);
             $this->get('session')->set('breadcrumb', $sessionBreadcrumb);
 
-            return $this->buildBreadcrumb($sessionBreadcrumb);
+            return $sessionBreadcrumb;
 
             // sinon si $sessionAliment différent de l'aliment en cours vider
             // session et retourner le fil d'ariane par défaut
         } else if ($aliment !== $sessionAliment) {
             $this->get('session')->remove('breadcrumb');
 
-            return $this->getDefaultBreadcrumb($aliment);
+            return array_reverse($this->getDefaultBreadcrumb($aliment));
         }
     }
 
@@ -112,24 +111,11 @@ class AlimentController extends Controller
     {
         $superAliments = $aliment->getSuperAliments();
 
-        switch ($superAliments->count()) {
-
-            case 0:
-                return $res;
-
-            default:
-                $res[] = $superAliments->first();
-                return $this->getSuperAliments($superAliments->first(), $res);
+        if ($superAliments->count() === 0) {
+            return $res;
+        } else {
+            $res[] = $superAliments->first();
+            return $this->getDefaultBreadcrumb($superAliments->first(), $res);
         }
-
-    }
-
-    /**
-     * @param array $breadcrumb
-     */
-    private
-    function buildBreadcrumb(array $breadcrumb)
-    {
-
     }
 }
