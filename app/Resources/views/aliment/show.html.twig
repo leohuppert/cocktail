@@ -4,16 +4,12 @@
     <h1>{{ aliment }}</h1>
 
     <ol class="breadcrumb">
-        {% for ariane in super_aliments %}
-            {% for super in ariane %}
-                <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
-            {% endfor %}
-
-            <li class="breadcrumb-item active">{{ aliment }}</li>
-
-            <br />
-
+        {% for super in super_aliments %}
+            <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
         {% endfor %}
+
+        <li class="breadcrumb-item active">{{ aliment }}</li>
+
     </ol>
 
     <table class="table table-striped">
