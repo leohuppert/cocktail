@@ -52,78 +52,13 @@ class AlimentController extends Controller
     }
 
     /**
-     * Returns an array filled with the SuperAliment tree for a single Aliment.
-     *
-     * @param Aliment $aliment
-     * @param array $res
-     * @return array
-     */
-    private function getSuperAliments(Aliment $aliment, array $res = array())
-    {
-        $superAliments = $aliment->getSuperAliments();
-
-        switch ($superAliments->count()) {
-
-            case 0:
-                return $res;
-
-            case 1:
-                $res[] = $superAliments->first();
-                return $this->getSuperAliments($superAliments->first(), $res);
-
-            default:
-                $arr = array();
-                $tmp = array();
-
-                foreach ($superAliments as $key => $super) {
-                    $tmp[$key] = $super;
-                    $arr[] = $this->getSuperAliments($super);
-                }
-                $res[] = $tmp;
-
-                for ($i = 0; $i < count($arr); $i++) {
-                    $res = array_merge($res, $arr[$i]);
-                }
-                return $res;
-        }
-    }
-
-    /**
      * Returns an array filled with every breadcrumb possible.
      *
-     * @param array $superAliments
+     * @param Aliment $aliment
      * @return array
      */
     private function getBreadcrumb(Aliment $aliment)
     {
-        /*
-        $res = array();
-        $arr = array();
-        $cpt = 0;
-        foreach ($superAliments as $key => $super) {
-            if (is_array($super)) {
-                for ($i = 0; $i < count($super); $i++) {
-                    if (isset($res[$cpt])) {
-                        $arr[$i] = $res[$cpt];
-                    }
-                    $arr[$i][] = $super[$i];
-                }
-                $res = $arr;
-            } else {
-                $res[$cpt][] = $super;
-                if ($super->getName() === "Aliment") {
-                    $cpt++;
-                }
-            }
-        }
-
-        foreach ($res as $key => $re) {
-            $res[$key] = array_reverse($re);
-        }
-
-        return $res;
-        */
-
         $this->get('session')->set('breadcrumb', array(0 => 251));
 
         $sessionBreadcrumb = $this->get('session')
@@ -132,13 +67,13 @@ class AlimentController extends Controller
         // si un fil d'ariane est en session
         if ($sessionBreadcrumb !== null) {
             return $this->getSessionBreadcrumb($aliment, $sessionBreadcrumb);
-        }
-        else {
+        } else {
             return $this->getDefaultBreadcrumb($aliment);
         }
     }
 
-    private function getSessionBreadcrumb(Aliment $aliment, array $sessionBreadcrumb) {
+    private function getSessionBreadcrumb(Aliment $aliment, array $sessionBreadcrumb)
+    {
         $em = $this->getDoctrine()
             ->getManager();
 
@@ -168,11 +103,33 @@ class AlimentController extends Controller
         }
     }
 
-    private function getDefaultBreadcrumb(Aliment $aliment) {
+    /**
+     * @param Aliment $aliment
+     * @param array $res
+     * @return array
+     */
+    private function getDefaultBreadcrumb(Aliment $aliment, array $res = array())
+    {
+        $superAliments = $aliment->getSuperAliments();
+
+        switch ($superAliments->count()) {
+
+            case 0:
+                return $res;
+
+            default:
+                $res[] = $superAliments->first();
+                return $this->getSuperAliments($superAliments->first(), $res);
+        }
 
     }
 
-    private function buildBreadcrumb(array $breadcrumb) {
+    /**
+     * @param array $breadcrumb
+     */
+    private
+    function buildBreadcrumb(array $breadcrumb)
+    {
 
     }
 }
