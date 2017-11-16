@@ -66,8 +66,13 @@ class AlimentController extends Controller
 
             return $this->getSessionBreadcrumb($aliment, $sessionBreadcrumb);
         } else {
+            if ($aliment->getName() === 'Aliment') {
+                $this->get('session')->set('breadcrumb', array(0 => $aliment->getId()));
+            }
+            $breadcrumb = array(0 => $aliment);
+            $breadcrumb = array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment));
 
-            return $this->buildBreadcrumb($this->getDefaultBreadcrumb($aliment));
+            return $this->buildBreadcrumb($breadcrumb);
         }
     }
 
@@ -103,9 +108,18 @@ class AlimentController extends Controller
             // sinon si $sessionAliment différent de l'aliment en cours vider
             // session et retourner le fil d'ariane par défaut
         } else if ($aliment !== $sessionAliment) {
-            $this->get('session')->remove('breadcrumb');
+            if ($aliment->getName() === 'Aliment') {
+                $this->get('session')->set('breadcrumb', array(0 => $aliment->getId()));
+            } else {
+                $this->get('session')->remove('breadcrumb');
+            }
+            $breadcrumb = array(0 => $aliment);
+            $breadcrumb = array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment));
 
-            return $this->buildBreadcrumb($this->getDefaultBreadcrumb($aliment));
+            return $this->buildBreadcrumb($breadcrumb);
+        } else {
+
+            return $this->buildBreadcrumb($sessionBreadcrumb, false);
         }
     }
 
@@ -127,9 +141,16 @@ class AlimentController extends Controller
         }
     }
 
+    /**
+     * Builds a breadcrumb array that matches the order of displaying aliments.
+     * @param array $breadcrumb
+     * @param bool $default
+     * @return array
+     */
     private function buildBreadcrumb(array $breadcrumb, $default = true)
     {
         if ($default) {
+
             return array_reverse($breadcrumb);
         } else {
             $em = $this->getDoctrine()->getManager();
