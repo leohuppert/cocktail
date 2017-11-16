@@ -66,16 +66,12 @@ class AlimentController extends Controller
 
             return $this->getSessionBreadcrumb($aliment, $sessionBreadcrumb);
         } else {
-            if ($aliment->getName() === 'Aliment') {
-                $this->get('session')->set('breadcrumb', array(0 => $aliment->getId()));
-            } else {
-                $breadcrumb = array(0 => $aliment->getId());
-                $breadcrumb = array_reverse(array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment)));
-                $this->get('session')->set('breadcrumb', $breadcrumb);
+            $breadcrumb = array(0 => $aliment->getId());
+            $breadcrumb = array_reverse(array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment)));
+            $this->get('session')->set('breadcrumb', $breadcrumb);
 
-                $breadcrumb = $this->buildBreadcrumb($breadcrumb);
-                return $breadcrumb;
-            }
+            $breadcrumb = $this->buildBreadcrumb($breadcrumb);
+            return $breadcrumb;
         }
     }
 
@@ -116,22 +112,14 @@ class AlimentController extends Controller
             // sinon si $sessionAliment différent de l'aliment en cours vider
             // session et retourner le fil d'ariane par défaut
         } else if ($aliment !== $lastSessionAliment) {
-            if ($aliment->getName() === 'Aliment') {
-                $this->get('session')->set('breadcrumb', array(0 => $aliment->getId()));
-            } else {
-                $this->get('session')->remove('breadcrumb');
+            $this->get('session')->remove('breadcrumb');
 
-                $breadcrumb = array(0 => $aliment->getId());
-                $breadcrumb = array_reverse(array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment)));
-                $this->get('session')->set('breadcrumb', $breadcrumb);
+            $breadcrumb = array(0 => $aliment->getId());
+            $breadcrumb = array_reverse(array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment)));
+            $this->get('session')->set('breadcrumb', $breadcrumb);
 
-                $breadcrumb = $this->buildBreadcrumb($breadcrumb);
-                return $breadcrumb;
-            }
-//            $breadcrumb = array(0 => $aliment);
-//            $breadcrumb = array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment));
-//
-//            return $this->buildBreadcrumb($breadcrumb);
+            $breadcrumb = $this->buildBreadcrumb($breadcrumb);
+            return $breadcrumb;
         } else {
 
             return $this->buildBreadcrumb($sessionBreadcrumb);
