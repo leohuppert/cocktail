@@ -7,9 +7,6 @@
         {% for super in super_aliments %}
             <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
         {% endfor %}
-
-        <li class="breadcrumb-item active">{{ aliment }}</li>
-
     </ol>
 
     <table class="table table-striped">
