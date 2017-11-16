@@ -68,11 +68,14 @@ class AlimentController extends Controller
         } else {
             if ($aliment->getName() === 'Aliment') {
                 $this->get('session')->set('breadcrumb', array(0 => $aliment->getId()));
-            }
-            $breadcrumb = array(0 => $aliment);
-            $breadcrumb = array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment));
+            } else {
+                $breadcrumb = array(0 => $aliment->getId());
+                $breadcrumb = array_reverse(array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment)));
+                $this->get('session')->set('breadcrumb', $breadcrumb);
 
-            return $this->buildBreadcrumb($breadcrumb);
+                $breadcrumb = $this->buildBreadcrumb($breadcrumb);
+                return $breadcrumb;
+            }
         }
     }
 
@@ -99,17 +102,16 @@ class AlimentController extends Controller
             $sessionBreadcrumb[] = $aliment->getId();
             $this->get('session')->set('breadcrumb', $sessionBreadcrumb);
 
-            return $this->buildBreadcrumb($sessionBreadcrumb, false);
+            return $this->buildBreadcrumb($sessionBreadcrumb);
 
             // Cas $sessionAliment = un subAliment de l'aliment en cours
-            // @TODO: problème Aliment => Légume => Jus de légumes => Jus, à voir si on affiche les supers catégories à terme pour éviter ce genre de problème
         } else if ($aliment->getSubAliments()->contains($lastSessionAliment)
             && $aliment === $beforeLastSessionAliment) {
 
             unset($sessionBreadcrumb[count($sessionBreadcrumb) - 1]);
             $this->get('session')->set('breadcrumb', $sessionBreadcrumb);
 
-            return $this->buildBreadcrumb($sessionBreadcrumb, false);
+            return $this->buildBreadcrumb($sessionBreadcrumb);
 
             // sinon si $sessionAliment différent de l'aliment en cours vider
             // session et retourner le fil d'ariane par défaut
@@ -118,14 +120,21 @@ class AlimentController extends Controller
                 $this->get('session')->set('breadcrumb', array(0 => $aliment->getId()));
             } else {
                 $this->get('session')->remove('breadcrumb');
-            }
-            $breadcrumb = array(0 => $aliment);
-            $breadcrumb = array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment));
 
-            return $this->buildBreadcrumb($breadcrumb);
+                $breadcrumb = array(0 => $aliment->getId());
+                $breadcrumb = array_reverse(array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment)));
+                $this->get('session')->set('breadcrumb', $breadcrumb);
+
+                $breadcrumb = $this->buildBreadcrumb($breadcrumb);
+                return $breadcrumb;
+            }
+//            $breadcrumb = array(0 => $aliment);
+//            $breadcrumb = array_merge($breadcrumb, $this->getDefaultBreadcrumb($aliment));
+//
+//            return $this->buildBreadcrumb($breadcrumb);
         } else {
 
-            return $this->buildBreadcrumb($sessionBreadcrumb, false);
+            return $this->buildBreadcrumb($sessionBreadcrumb);
         }
     }
 
@@ -142,7 +151,7 @@ class AlimentController extends Controller
         if ($superAliments->count() === 0) {
             return $res;
         } else {
-            $res[] = $superAliments->first();
+            $res[] = $superAliments->first()->getId();
             return $this->getDefaultBreadcrumb($superAliments->first(), $res);
         }
     }
@@ -150,24 +159,18 @@ class AlimentController extends Controller
     /**
      * Builds a breadcrumb array that matches the order of displaying aliments.
      * @param array $breadcrumb
-     * @param bool $default
      * @return array
      */
-    private function buildBreadcrumb(array $breadcrumb, $default = true)
+    private function buildBreadcrumb(array $breadcrumb)
     {
-        if ($default) {
+        $em = $this->getDoctrine()->getManager();
+        $finalBreadcrumb = array();
 
-            return array_reverse($breadcrumb);
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $finalBreadcrumb = array();
-
-            foreach ($breadcrumb as $alimentId) {
-                $finalBreadcrumb[] = $em->getRepository('AppBundle\Entity\Aliment')
-                    ->findBy(array('id' => $alimentId))[0];
-            }
-
-            return $finalBreadcrumb;
+        foreach ($breadcrumb as $alimentId) {
+            $finalBreadcrumb[] = $em->getRepository('AppBundle\Entity\Aliment')
+                ->findBy(array('id' => $alimentId))[0];
         }
+
+        return $finalBreadcrumb;
     }
 }
