@@ -87,19 +87,25 @@ class AlimentController extends Controller
         $em = $this->getDoctrine()
             ->getManager();
 
-        $sessionAliment = $em->getRepository('AppBundle\Entity\Aliment')
+        $lastSessionAliment = $em->getRepository('AppBundle\Entity\Aliment')
             ->findBy(array('id' => end($sessionBreadcrumb)));
-        $sessionAliment = array_shift($sessionAliment);
+        $beforeLastSessionAliment = $em->getRepository('AppBundle\Entity\Aliment')
+            ->findBy(array('id' => prev($sessionBreadcrumb)));
+        $lastSessionAliment = array_shift($lastSessionAliment);
+        $beforeLastSessionAliment = array_shift($beforeLastSessionAliment);
 
         // Cas $sessionAliment = un superAliment de l'aliment en cours
-        if ($aliment->getSuperAliments()->contains($sessionAliment)) {
+        if ($aliment->getSuperAliments()->contains($lastSessionAliment)) {
             $sessionBreadcrumb[] = $aliment->getId();
             $this->get('session')->set('breadcrumb', $sessionBreadcrumb);
 
             return $this->buildBreadcrumb($sessionBreadcrumb, false);
 
             // Cas $sessionAliment = un subAliment de l'aliment en cours
-        } else if ($aliment->getSubAliments()->contains($sessionAliment)) {
+            // @TODO: problème Aliment => Légume => Jus de légumes => Jus, à voir si on affiche les supers catégories à terme pour éviter ce genre de problème
+        } else if ($aliment->getSubAliments()->contains($lastSessionAliment)
+            && $aliment === $beforeLastSessionAliment) {
+
             unset($sessionBreadcrumb[count($sessionBreadcrumb) - 1]);
             $this->get('session')->set('breadcrumb', $sessionBreadcrumb);
 
@@ -107,7 +113,7 @@ class AlimentController extends Controller
 
             // sinon si $sessionAliment différent de l'aliment en cours vider
             // session et retourner le fil d'ariane par défaut
-        } else if ($aliment !== $sessionAliment) {
+        } else if ($aliment !== $lastSessionAliment) {
             if ($aliment->getName() === 'Aliment') {
                 $this->get('session')->set('breadcrumb', array(0 => $aliment->getId()));
             } else {
