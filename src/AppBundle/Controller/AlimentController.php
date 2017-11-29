@@ -51,6 +51,24 @@ class AlimentController extends Controller
     }
 
     /**
+     * @param Aliment $aliment
+     * @param array $res
+     * @return array
+     */
+    private function getSubAliments(Aliment $aliment, $res = array())
+    {
+        foreach ($aliment->getSubAliments() as $subAliment) {
+            if (!in_array($subAliment->getId(), $res)) {
+                $res[] = $subAliment->getId();
+                if ($subAliment->getSubAliments()->count() > 0) {
+                    $res = $this->getSubAliments($subAliment, $res);
+                }
+            }
+        }
+        return $res;
+    }
+
+    /**
      * Returns an array containing the breadcrumb to display.
      *
      * @param Aliment $aliment
