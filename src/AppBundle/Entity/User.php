@@ -74,7 +74,6 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
      * @Assert\Email()
      */
     private $email;
@@ -97,6 +96,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="postCode", type="string", length=255, nullable=true)
+     * @Assert\Length(max="5", maxMessage="Le code postal de doit pas dépasser 5 chiffres")
      */
     private $postCode;
 
@@ -108,6 +108,14 @@ class User implements UserInterface
     private $city;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="phone_number", type="string", length=255, nullable=true)
+     * @Assert\Length(min="10", max="10", exactMessage="Le numéro de téléphone doit contenir 10 caractères (06XXXXXXXX)")
+     */
+    private $phoneNumber;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Recipe")
@@ -117,6 +125,9 @@ class User implements UserInterface
      */
     private $favoriteRecipes;
 
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         $this->favoriteRecipes = new ArrayCollection();
@@ -387,6 +398,30 @@ class User implements UserInterface
     public function getCity()
     {
         return $this->city;
+    }
+
+    /**
+     * Set Phone Number
+     *
+     * @param $phoneNumber
+     *
+     * @return string
+     */
+    public function setPhoneNumber($phoneNumber)
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get Phone Number
+     *
+     * @return string
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
     }
 
     /**
