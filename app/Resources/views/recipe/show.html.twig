@@ -5,7 +5,9 @@
 
     <div class="row">
         <div class="col-lg-4">
-            <img class="img-fluid" src="{{ asset('assets/pictures/' ~ recipe.picture) }}">
+            <div style="width: 300px; height: 300px">
+                <img class="img-fluid" src="{{ asset('assets/pictures/' ~ recipe.picture) }}">
+            </div>
         </div>
 
         <div class="col-lg-8">
@@ -34,38 +36,36 @@
                 </tr>
                 </tbody>
             </table>
+
+            <p>
+                {% if not is_granted('ROLE_USER') %}
+
+                    {% if not is_favorite %}
+                        <a href="{{ path('recipe_add_session_favorite', { id: recipe.id }) }}" class="btn btn-primary btn-sm">
+                            <i class="fa fa-star" aria-hidden="true"></i>&nbsp;Ajouter cette recette dans mes favoris
+                        </a>
+                    {% else %}
+                        <a href="{{ path('recipe_remove_session_favorite', { id: recipe.id }) }}" class="btn btn-danger btn-sm">
+                            <i class="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;Supprimer cette recette de mes favoris
+                        </a>
+                    {% endif %}
+
+                {% else %}
+
+                    {% if not is_favorite %}
+                        <a href="{{ path('recipe_add_user_favorite', { id: recipe.id }) }}" class="btn btn-primary btn-sm">
+                            <i class="fa fa-star" aria-hidden="true"></i>&nbsp;Ajouter cette recette dans mes favoris
+                        </a>
+                    {% else %}
+                        <a href="{{ path('recipe_remove_user_favorite', { id: recipe.id }) }}" class="btn btn-danger btn-sm">
+                            <i class="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;Supprimer cette recette de mes favoris
+                        </a>
+                    {% endif %}
+
+                {% endif %}
+            </p>
+
+            <a href="{{ path('recipe_index') }}">Retour sur la liste</a>
         </div>
     </div>
-
-    <br>
-
-    <p>
-        {% if not is_granted('ROLE_USER') %}
-
-            {% if not is_favorite %}
-                <a href="{{ path('recipe_add_session_favorite', { id: recipe.id }) }}" class="btn btn-primary btn-sm">
-                    <i class="fa fa-star" aria-hidden="true"></i>&nbsp;Ajouter cette recette dans mes favoris
-                </a>
-            {% else %}
-                <a href="{{ path('recipe_remove_session_favorite', { id: recipe.id }) }}" class="btn btn-danger btn-sm">
-                    <i class="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;Supprimer cette recette de mes favoris
-                </a>
-            {% endif %}
-
-        {% else %}
-
-            {% if not is_favorite %}
-                <a href="{{ path('recipe_add_user_favorite', { id: recipe.id }) }}" class="btn btn-primary btn-sm">
-                    <i class="fa fa-star" aria-hidden="true"></i>&nbsp;Ajouter cette recette dans mes favoris
-                </a>
-            {% else %}
-                <a href="{{ path('recipe_remove_user_favorite', { id: recipe.id }) }}" class="btn btn-danger btn-sm">
-                    <i class="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;Supprimer cette recette de mes favoris
-                </a>
-            {% endif %}
-
-        {% endif %}
-    </p>
-
-    <a href="{{ path('recipe_index') }}">Retour sur la liste</a>
 {% endblock %}
