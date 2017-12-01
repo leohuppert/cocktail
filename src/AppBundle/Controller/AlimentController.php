@@ -46,17 +46,15 @@ class AlimentController extends Controller
     {
         $superAliments = $this->getBreadcrumb($aliment);
 
-        $subAliments = $this->getSubAliments($aliment);
-        $subAliments[] = $aliment->getId();
+        $subAliments = $this->getSubAliments2($aliment);
+        $subAliments[] = $aliment;
 
         $em = $this->getDoctrine()
             ->getManager();
 
 
         $filteredRecipes = array();
-        foreach ($subAliments as $al) {
-            $a = $em->getRepository('AppBundle:Aliment')
-                ->findBy(['id' => $al])[0];
+        foreach ($subAliments as $a) {
             foreach ($a->getRecipes() as $r) {
                 $filteredRecipes[] = $r;
             }
@@ -199,7 +197,7 @@ class AlimentController extends Controller
         return $res;
     }
 
-    /*private function getSubAliments2(Aliment $aliment, $res = array())
+    private function getSubAliments2(Aliment $aliment, $res = array())
     {
         foreach ($aliment->getSubAliments() as $subAliment) {
             if (!in_array($subAliment, $res)) {
@@ -211,5 +209,5 @@ class AlimentController extends Controller
         }
 
         return $res;
-    }*/
+    }
 }
