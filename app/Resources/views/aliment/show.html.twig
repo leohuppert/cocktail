@@ -108,7 +108,8 @@
             constructor(id, title, picture) {
                 this.id = id;
                 this.title = title;
-                this.picture = '/assets/pictures/' + picture;
+                //this.picture = '/assets/pictures/' + picture;
+                this.picture = '{{ asset('assets/pictures/') }}' + picture;
                 this.link = Routing.generate('recipe_show', {id: this.id});
                 this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
             }

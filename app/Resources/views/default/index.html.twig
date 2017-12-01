@@ -3,10 +3,13 @@
 {% block body %}
 
     <div class="jumbotron">
-        <h1>Gestion de cocktails</h1>
-        <p class="lead">Salut</p>
-        <a class="btn btn-lg btn-primary" href="{{ path('recipe_index') }}" role="button">Les recettes &raquo;</a>
-        <a class="btn btn-lg btn-primary" href="{{ path('aliment_index') }}" role="button">Les aliments &raquo;</a>
+        <h1>Cocktails</h1>
+
+        <br>
+        <a class="btn btn-lg btn-primary" href="{{ path('aliment_show', { id: aliment_id }) }}" role="button">Parcourir la hiérarchie des aliments &raquo;</a>
+        <br><br>
+        <a class="btn btn-lg btn-primary" href="{{ path('recipe_index') }}" role="button">Voir l'ensemble des recettes &raquo;</a>
+        <a class="btn btn-lg btn-primary" href="{{ path('aliment_index') }}" role="button">Voir l'ensemble des aliments &raquo;</a>
     </div>
 
 {% endblock %}
