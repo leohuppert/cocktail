@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Aliment;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -39,14 +40,32 @@ class AlimentController extends Controller
      * @Method("GET")
      * @param Aliment $aliment
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function showAction(Aliment $aliment)
     {
         $superAliments = $this->getBreadcrumb($aliment);
 
+        $subAliments = $this->getSubAliments($aliment);
+        $subAliments[] = $aliment->getId();
+
+        $em = $this->getDoctrine()
+            ->getManager();
+
+
+        $filteredRecipes = array();
+        foreach ($subAliments as $al) {
+            $a = $em->getRepository('AppBundle:Aliment')
+                ->findBy(['id' => $al])[0];
+            foreach ($a->getRecipes() as $r) {
+                $filteredRecipes[] = $r;
+            }
+        }
+
         return $this->render('aliment/show.html.twig', array(
-            'aliment' => $aliment,
+            'aliment'        => $aliment,
             'super_aliments' => $superAliments,
+            'recipes'        => array_unique($filteredRecipes),
         ));
     }
 
@@ -160,4 +179,37 @@ class AlimentController extends Controller
 
         return $finalBreadcrumb;
     }
+
+    /**
+     * @param Aliment $aliment
+     * @param array $res
+     * @return array
+     */
+    private function getSubAliments(Aliment $aliment, $res = array())
+    {
+        foreach ($aliment->getSubAliments() as $subAliment) {
+            if (!in_array($subAliment->getId(), $res)) {
+                $res[] = $subAliment->getId();
+                if ($subAliment->getSubAliments()->count() > 0) {
+                    $res = $this->getSubAliments($subAliment, $res);
+                }
+            }
+        }
+
+        return $res;
+    }
+
+    /*private function getSubAliments2(Aliment $aliment, $res = array())
+    {
+        foreach ($aliment->getSubAliments() as $subAliment) {
+            if (!in_array($subAliment, $res)) {
+                $res[] = $subAliment;
+                if ($subAliment->getSubAliments()->count() > 0) {
+                    $res = $this->getSubAliments2($subAliment, $res);
+                }
+            }
+        }
+
+        return $res;
+    }*/
 }

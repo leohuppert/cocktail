@@ -50,12 +50,25 @@ class Aliment
     private $superAliments;
 
     /**
+     * Les recettes qui utilisent cet aliment
+     *
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Recipe")
+     * @ORM\JoinTable(name="aliments_recipes",
+     *     joinColumns={@ORM\JoinColumn(name="aliment_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="recipe_id", referencedColumnName="id")})
+     */
+    private $recipes;
+
+    /**
      * Aliment constructor.
      */
     public function __construct()
     {
         $this->subAliments = new ArrayCollection();
         $this->superAliments = new ArrayCollection();
+        $this->recipes = new ArrayCollection();
     }
 
 
@@ -173,5 +186,30 @@ class Aliment
         return $this->name;
     }
 
-}
+    /**
+     * @return ArrayCollection
+     */
+    public function getRecipes()
+    {
+        return $this->recipes;
+    }
 
+    /**
+     * @param Recipe $recipe
+     */
+    public function addRecipe(Recipe $recipe)
+    {
+        if (!$this->recipes->contains($recipe)) {
+            $this->recipes->add($recipe);
+        }
+    }
+
+    /**
+     * @param ArrayCollection $recipes
+     */
+    public function setRecipes(ArrayCollection $recipes)
+    {
+        $this->recipes = $recipes;
+    }
+
+}

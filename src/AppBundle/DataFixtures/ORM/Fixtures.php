@@ -22,6 +22,15 @@ class Fixtures extends Fixture
         'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o',
         'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y');
 
+    /**
+     * Fonction appelée lors de l'exécution de la commande
+     * php bin/console doctrine:fixtures:load
+     *
+     * Peuple la base de données dont la config se trouve dans app/parameters.yml
+     * en utilisant les données se trouvant dans src/AppBundle/DataFixtures/Donnees.php
+     *
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         // Ajout des entités aliment sans relations sous/super catégorie
@@ -91,6 +100,7 @@ class Fixtures extends Fixture
             file_exists('web/assets/pictures/' . $pictureName) ? $recipe->setPicture($pictureName) : $recipe->setPicture('default.png');
 
 
+            // On ajoute à la recette en cours les aliments qui la composent
             foreach ($value['index'] as $aliment) {
                 $al = $manager->getRepository('AppBundle:Aliment')
                     ->findBy(array('name' => $aliment));
@@ -101,6 +111,18 @@ class Fixtures extends Fixture
             }
 
             $manager->persist($recipe);
+        }
+
+        $manager->flush();
+
+        // Enregistrement des recettes => dans les entités Aliment
+        $recipes = $manager->getRepository('AppBundle:Recipe')
+            ->findAll();
+
+        foreach ($recipes as $recipe) {
+            foreach ($recipe->getAliments() as $aliment) {
+                $aliment->addRecipe($recipe);
+            }
         }
 
         $manager->flush();

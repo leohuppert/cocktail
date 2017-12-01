@@ -59,6 +59,10 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->render('default/index.html.twig');
+        // return $this->render('default/index.html.twig');
+
+        $aliment = $this->getDoctrine()->getRepository('AppBundle:Aliment')
+            ->findBy(['name' => 'Aliment'])[0];
+        return $this->redirectToRoute('aliment_show', ['id' => $aliment->getId()]);
     }
 }

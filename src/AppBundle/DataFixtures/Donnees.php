@@ -1472,6 +1472,7 @@ class Donnees
                     ),
             ),
     );
+
     public static $Hierarchie = array(
         'Épice' =>
             array(

@@ -76,7 +76,8 @@
 
     {{ parent() }}
 
-    <script src="https://unpkg.com/vue@2.4.4/dist/vue.js"></script>
+    {#<script src="https://unpkg.com/vue@2.4.4/dist/vue.js"></script>#}
+    <script src="{{ asset('assets/js/vue.js') }}"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 

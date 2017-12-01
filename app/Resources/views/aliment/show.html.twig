@@ -1,41 +1,145 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>{{ aliment }}</h1>
 
+    {# Fil d'ariane #}
     <ol class="breadcrumb">
         {% for super in super_aliments %}
             <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
         {% endfor %}
     </ol>
 
-    <table class="table table-striped">
-        <tbody>
-        <tr>
-            <th>Name</th>
-            <td>{{ aliment.name }}</td>
-        </tr>
-        <tr>
-            <th>Sous-catégorie</th>
-            <td>
-                {% for aliment in aliment.subAliments %}
-                    <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
-                    {% if loop.index != loop.length %} /{% endif %}
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>Super-catégorie</th>
-            <td>
-                {% for aliment in aliment.superAliments %}
-                    <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
-                    {% if loop.index != loop.length %} /{% endif %}
-                {% endfor %}
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    {# Sous-aliment #}
+    {% if aliment.subAliments | length > 0 %}
+        <div>
+            <h4>Affiner la recherche</h4>
+            {% for aliment in aliment.subAliments %}
+                <a class="btn btn-sm btn-primary" href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-    <a href="{{ path('aliment_index') }}" class="btn btn-sm btn-primary">Retourner sur la liste des aliments</a>
+    <br>
+
+    <h4>Liste des recettes correspondantes</h4>
+
+    <div id="app">
+
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Filter par nom..." v-model="search">
+        </div>
+
+        <div class="wrapper" id="list" style="display: none;">
+            <div class="cocktail" v-for="recipe in filteredList">
+                <a v-bind:href="recipe.link" v-bind:title="recipe.title">
+                    <img v-bind:src="recipe.picture">
+                    ${ recipe.shortTitle }
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+
+        #app {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1080px;
+            justify-content: center;
+        }
+
+        .cocktail {
+            width: 200px;
+            margin: 10px;
+            padding: 5px;
+            box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 6px, rgba(0, 0, 0, 0.117647) 0 1px 4px;
+            transition: .1s all ease-in-out;
+        }
+
+        .cocktail:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+
+        .cocktail img {
+            height: 150px;
+            max-width: 150px;
+        }
+
+        .cocktail a {
+            text-decoration: none;
+            display: flex;
+            flex-direction:column;
+            align-items: center;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    {#<script src="https://unpkg.com/vue@2.4.4/dist/vue.js"></script>#}
+    <script src="{{ asset('assets/js/vue.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+    <script>
+
+        // Activation des tooltips Bootstrap
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+
+        class Recipe {
+            constructor(id, title, picture) {
+                this.id = id;
+                this.title = title;
+                this.picture = '/assets/pictures/' + picture;
+                this.link = Routing.generate('recipe_show', {id: this.id});
+                this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
+            }
+        }
+
+        let recipes = [];
+
+        {% for recipe in recipes %}
+
+            recipes.push(new Recipe({{ recipe.id }}, `{{ recipe.name | raw }}`, `{{ recipe.picture }}`));
+
+        {% endfor %}
+
+        const app = new Vue({
+            delimiters: ['${', '}'],
+            el: '#app',
+            data: {
+                search: '',
+                recipeList: recipes,
+            },
+            computed: {
+                filteredList() {
+                    return this.recipeList.filter(recipe => recipe.title.toLowerCase().includes(this.search.toLowerCase()));
+                }
+            }
+        });
+
+        // On réaffiche la liste
+        $('#list').show();
+
+
+    </script>
 
 {% endblock %}
