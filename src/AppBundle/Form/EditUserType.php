@@ -37,37 +37,38 @@ class EditUserType extends AbstractType
                 'required' => false,
             ))
             ->add('gender', ChoiceType::class, array(
-                'label' => 'Sexe',
+                'label'       => 'Sexe',
                 'placeholder' => 'Sélectionnez votre sexe',
-                'required' => false,
-                'choices' => array(
+                'required'    => false,
+                'choices'     => array(
                     'Homme' => 'h',
                     'Femme' => 'f'
                 )
             ))
             ->add('email', EmailType::class, array(
-                'label' => 'Adresse électronique',
+                'label'    => 'Adresse électronique',
                 'required' => false
             ))
             ->add('birthDate', DateType::class, array(
-                'label' => 'Date de naissance',
+                'label'    => 'Date de naissance',
                 'required' => false,
-                'years' => range(date('Y')-70, date('Y'))
+                'years'    => range(date('Y')-70, date('Y')),
+                'format'   => 'dd-MM-yyyy',
             ))
             ->add('address', TextType::class, array(
-                'label' => 'Adresse',
+                'label'    => 'Adresse',
                 'required' => false
             ))
             ->add('postCode', TextType::class, array(
-                'label' => 'Code postal',
+                'label'    => 'Code postal',
                 'required' => false
             ))
             ->add('city', TextType::class, array(
-                'label' => 'Ville',
+                'label'    => 'Ville',
                 'required' => false
             ))
             ->add('phoneNumber', TextType::class, array(
-                'label' => 'Numéro de téléphone',
+                'label'    => 'Numéro de téléphone',
                 'required' => false
             ));
     }
