@@ -12,19 +12,19 @@
             <table class="table table-striped">
                 <tbody>
                 <tr>
-                    <th>Name</th>
+                    <th>Nom</th>
                     <td>{{ recipe.name }}</td>
                 </tr>
                 <tr>
-                    <th>Ingredients</th>
+                    <th>Ingrédients</th>
                     <td>{{ recipe.ingredients }}</td>
                 </tr>
                 <tr>
-                    <th>Preparation</th>
-                    <td>{{ recipe.preparation }}</td>
+                    <th>Préparation</th>
+                    <td>{{ recipe.preparation | raw }}</td>
                 </tr>
                 <tr>
-                    <th>Aliments</th>
+                    <th>Aliments utilisés</th>
                     <td>
                         {% for aliment in recipe.aliments %}
                             <a href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
@@ -67,9 +67,5 @@
         {% endif %}
     </p>
 
-    <ul>
-        <li>
-            <a href="{{ path('recipe_index') }}">Back to the list</a>
-        </li>
-    </ul>
+    <a href="{{ path('recipe_index') }}">Retour sur la liste</a>
 {% endblock %}
