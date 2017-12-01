@@ -52,7 +52,7 @@ class DefaultController extends Controller
                 // Message flash pour indiquer les recettes ajoutés depuis la session
                 $flashMessage = 'Recette(s) ajoutée(s) aux favoris : ';
                 foreach ($addedRecipes as $recipe) {
-                    $flashMessage = $flashMessage . $recipe->getName() . ' ,';
+                    $flashMessage = $flashMessage . $recipe->getName() . ', ';
                 }
                 $flashMessage = substr($flashMessage, 0, strlen($flashMessage) - 2);
                 $this->addFlash('notice', $flashMessage);
