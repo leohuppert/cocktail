@@ -24,9 +24,11 @@ class AlimentController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()
+            ->getManager();
 
-        $aliments = $em->getRepository('AppBundle:Aliment')->findAll();
+        $aliments = $em->getRepository('AppBundle:Aliment')
+            ->findAll();
 
         return $this->render('aliment/index.html.twig', array(
             'aliments' => $aliments,
@@ -40,7 +42,6 @@ class AlimentController extends Controller
      * @Method("GET")
      * @param Aliment $aliment
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function showAction(Aliment $aliment)
     {
@@ -49,11 +50,8 @@ class AlimentController extends Controller
         $subAliments = $this->getSubAliments2($aliment);
         $subAliments[] = $aliment;
 
-        $em = $this->getDoctrine()
-            ->getManager();
-
-
         $filteredRecipes = array();
+
         foreach ($subAliments as $a) {
             foreach ($a->getRecipes() as $r) {
                 $filteredRecipes[] = $r;

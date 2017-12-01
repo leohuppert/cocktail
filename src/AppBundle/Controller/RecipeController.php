@@ -23,9 +23,11 @@ class RecipeController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()
+            ->getManager();
 
-        $recipes = $em->getRepository('AppBundle:Recipe')->findAll();
+        $recipes = $em->getRepository('AppBundle:Recipe')
+            ->findAll();
 
         return $this->render('recipe/index.html.twig', array(
             'recipes' => $recipes,
@@ -207,14 +209,15 @@ class RecipeController extends Controller
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
 
             if ($this->get('session')->get('favorites') !== null) {
-
                 // On regarde si la recette se trouve dans les favoris
                 $isFavorite = in_array($recipe->getId(), $this->get('session')->get('favorites'));
             }
         }
         // Connecté
         else {
-            $isFavorite = $this->getUser()->getFavoriteRecipes()->contains($recipe);
+            $isFavorite = $this->getUser()
+                ->getFavoriteRecipes()
+                ->contains($recipe);
         }
 
         return $this->render('recipe/show.html.twig', array(

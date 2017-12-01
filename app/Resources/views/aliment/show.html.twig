@@ -14,7 +14,9 @@
         <div>
             <h4>Affiner la recherche</h4>
             {% for aliment in aliment.subAliments %}
-                <a class="btn btn-sm btn-primary" href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+                <div style="display: inline-block; padding: 2px;">
+                    <a class="btn btn-sm btn-outline-primary" href="{{ path('aliment_show', { id: aliment.id }) }}">{{ aliment }}</a>
+                </div>
             {% endfor %}
         </div>
     {% endif %}
@@ -42,57 +44,12 @@
 
 {% block stylesheets %}
     {{ parent() }}
-
-    <style>
-
-        #app {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            max-width: 1080px;
-            justify-content: center;
-        }
-
-        .cocktail {
-            width: 200px;
-            margin: 10px;
-            padding: 5px;
-            box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 6px, rgba(0, 0, 0, 0.117647) 0 1px 4px;
-            transition: .1s all ease-in-out;
-        }
-
-        .cocktail:hover {
-            transform: scale(1.1);
-            opacity: 0.9;
-        }
-
-        .cocktail img {
-            height: 150px;
-            max-width: 150px;
-        }
-
-        .cocktail a {
-            text-decoration: none;
-            display: flex;
-            flex-direction:column;
-            align-items: center;
-        }
-
-    </style>
-
+    <link rel="stylesheet" href="{{ asset('assets/css/cocktail.css') }}">
 {% endblock %}
 
 {% block javascripts %}
 
     {{ parent() }}
-
-    {#<script src="https://unpkg.com/vue@2.4.4/dist/vue.js"></script>#}
     <script src="{{ asset('assets/js/vue.js') }}"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
