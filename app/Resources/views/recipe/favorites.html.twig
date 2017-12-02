@@ -8,9 +8,8 @@
     {% if not is_granted('ROLE_USER') %}
         <h5>Vous n'êtes pas connecté</h5>
         Les recettes que vous enregistrez resteront dans vos favoris pendant cette session. Si vous vous connectez, elles seront ajoutées à votre compte.
+        <br><br>
     {% endif %}
-
-    <br><br>
 
     {% if favorites | length == 0 %}
         <p>
