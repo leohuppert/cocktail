@@ -67,7 +67,8 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
-        class Recipe {
+        // ES2015
+        {#class Recipe {
             constructor(id, title, picture) {
                 this.id = id;
                 this.title = title;
@@ -76,17 +77,34 @@
                 this.link = Routing.generate('recipe_show', {id: this.id});
                 this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
             }
+        }#}
+
+        // ES5
+        function Recipe(id, title, picture) {
+            this.id = id;
+            this.title = title;
+            this.picture = '{{ asset('assets/pictures/') }}' + picture;
+            this.link = Routing.generate('recipe_show', { id: this.id });
+            this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
         }
 
-        let recipes = [];
+        // let recipes = [];
+        var recipes = [];
 
+        {#
         {% for recipe in recipes %}
 
             recipes.push(new Recipe({{ recipe.id }}, `{{ recipe.name | raw }}`, `{{ recipe.picture }}`));
 
         {% endfor %}
+        #}
 
-        const app = new Vue({
+        {% for recipe in recipes %}
+            recipes.push(new Recipe({{ recipe.id }}, `{{ recipe.name | raw }}`, `{{ recipe.picture }}`));
+        {% endfor %}
+
+        // ES2015
+        /*const app = new Vue({
             delimiters: ['${', '}'],
             el: '#app',
             data: {
@@ -96,6 +114,27 @@
             computed: {
                 filteredList() {
                     return this.recipeList.filter(recipe => recipe.title.toLowerCase().includes(this.search.toLowerCase()));
+                }
+            }
+        });*/
+
+        // ES5
+        'use strict';
+
+        var app = new Vue({
+            delimiters: ['${', '}'],
+            el: '#app',
+            data: {
+                search: '',
+                recipeList: recipes,
+            },
+            computed: {
+                filteredList : function filteredList() {
+                    var _this = this;
+
+                    return this.recipeList.filter(function(recipe) {
+                        return recipe.title.toLowerCase().includes(_this.search.toLowerCase());
+                    });
                 }
             }
         });
