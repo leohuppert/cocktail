@@ -56,6 +56,7 @@
 {% block javascripts %}
 
     {{ parent() }}
+    <script src="{{ asset('assets/js/includes_polyfill.js') }}"></script>
     <script src="{{ asset('assets/js/vue.js') }}"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
@@ -100,7 +101,7 @@
         #}
 
         {% for recipe in recipes %}
-            recipes.push(new Recipe({{ recipe.id }}, `{{ recipe.name | raw }}`, `{{ recipe.picture }}`));
+            recipes.push(new Recipe({{ recipe.id }}, "{{ recipe.name | raw }}", "{{ recipe.picture }}"));
         {% endfor %}
 
         // ES2015
