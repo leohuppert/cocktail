@@ -5,7 +5,13 @@
     {# Fil d'ariane #}
     <ol class="breadcrumb">
         {% for super in super_aliments %}
-            <li class="breadcrumb-item"><a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a></li>
+            {% if loop.last %}
+                <li class="breadcrumb-item active">{{ super }}</li>
+            {% else %}
+                <li class="breadcrumb-item">
+                    <a href="{{ path('aliment_show', { id: super.id }) }}">{{ super }}</a>
+                </li>
+            {% endif %}
         {% endfor %}
     </ol>
 
