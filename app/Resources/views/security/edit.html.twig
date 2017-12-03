@@ -4,9 +4,21 @@
 
     <h1>Vos informations</h1>
 
+    {% if errors.count > 0 %}
+        <div class="alert alert-danger" role="alert">
+            Certains champs sont invalides. Veuillez revoir votre saisie.
+            {% if form.birthDate.vars.errors | length > 0 %}
+                <br>
+                Date de naissance invalide.
+            {% endif %}
+        </div>
+    {% endif %}
+
     {{ form_start(form) }}
         {{ form_widget(form) }}
         <input type="submit" class="btn btn-primary" value="Modifier">
     {{ form_end(form) }}
 
+
+    <br>
 {% endblock %}

@@ -9,6 +9,10 @@
     {% if errors.count > 0 %}
         <div class="alert alert-danger" role="alert">
             Certains champs sont invalides. Veuillez revoir votre saisie.
+            {% if form.birthDate.vars.errors | length > 0 %}
+                <br>
+                Date de naissance invalide.
+            {% endif %}
         </div>
     {% endif %}
 

@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,22 +20,22 @@ class EditUserType extends AbstractType
     {
         $builder
             ->add('login', TextType::class, array(
-                'required' => false,
+                'required' => false
             ))
             ->add('plainPassword', RepeatedType::class, array(
                 'type'            => PasswordType::class,
                 'required'        => false,
                 'invalid_message' => 'Les mots de passe ne correspondent pas',
                 'first_options'   => array('label' => 'Mot de passe'),
-                'second_options'  => array('label' => 'Répéter le mot de passe'),
+                'second_options'  => array('label' => 'Répéter le mot de passe')
             ))
             ->add('firstName', TextType::class, array(
                 'label'    => 'Prénom',
-                'required' => false,
+                'required' => false
             ))
             ->add('lastName', TextType::class, array(
                 'label'    => 'Nom',
-                'required' => false,
+                'required' => false
             ))
             ->add('gender', ChoiceType::class, array(
                 'label'       => 'Sexe',
@@ -49,11 +50,10 @@ class EditUserType extends AbstractType
                 'label'    => 'Adresse électronique',
                 'required' => false
             ))
-            ->add('birthDate', DateType::class, array(
+            ->add('birthDate', BirthdayType::class, array(
                 'label'    => 'Date de naissance',
                 'required' => false,
-                'years'    => range(date('Y')-70, date('Y')),
-                'format'   => 'dd-MM-yyyy',
+                'format'   => 'dd-MM-yyyy'
             ))
             ->add('address', TextType::class, array(
                 'label'    => 'Adresse',
