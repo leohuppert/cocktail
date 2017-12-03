@@ -201,7 +201,7 @@ class RecipeController extends Controller
      * @param Recipe $recipe
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction(Recipe $recipe)
+    public function showAction(Recipe $recipe, Request $request)
     {
         $isFavorite = false;
 
@@ -220,9 +220,19 @@ class RecipeController extends Controller
                 ->contains($recipe);
         }
 
+        // route
+        $previousUrl = $request->headers->get('referer');
+
+        if (preg_match('/^.*\/recipe\/.*/', $previousUrl)) {
+            $previousRoute = 'index';
+        } else {
+            $previousRoute = 'aliment';
+        }
+
         return $this->render('recipe/show.html.twig', array(
-            'recipe'      => $recipe,
-            'is_favorite' => $isFavorite,
+            'recipe'         => $recipe,
+            'is_favorite'    => $isFavorite,
+            'previous_route' => $previousRoute
         ));
     }
 }

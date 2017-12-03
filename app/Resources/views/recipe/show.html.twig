@@ -60,7 +60,13 @@
                 {% endif %}
             </p>
 
-            <a href="{{ path('recipe_index') }}">Retour sur la liste</a>
+            <a href="
+                {% if previous_route == 'index' %}
+                    {{ path('recipe_index') }}
+                {% else %}
+                    {{ app.request.headers.get('referer') }}
+                {% endif %}
+                ">Retour sur la liste</a>
         </div>
     </div>
 {% endblock %}
