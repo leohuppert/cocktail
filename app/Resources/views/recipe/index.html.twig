@@ -29,6 +29,7 @@
 {% block javascripts %}
 
     {{ parent() }}
+    <script src="{{ asset('assets/js/includes_polyfill.js') }}"></script>
     <script src="{{ asset('assets/js/vue.js') }}"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
@@ -40,6 +41,7 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
+        {#
         class Recipe {
             constructor(id, title, picture) {
                 this.id = id;
@@ -50,17 +52,34 @@
                 this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
             }
         }
+        #}
 
-        let recipes = [];
+        // ES5
+        function Recipe(id, title, picture) {
+            this.id = id;
+            this.title = title;
+            this.picture = '{{ asset('assets/pictures/') }}' + picture;
+            this.link = Routing.generate('recipe_show', { id: this.id });
+            this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
+        }
 
+        // let recipes = [];
+        var recipes = [];
+
+        {#
         {% for recipe in recipes %}
-
             recipes.push(new Recipe({{ recipe.id }}, `{{ recipe.name | raw }}`, `{{ recipe.picture }}`));
+        {% endfor %}
+        #}
 
+        // ES5
+        {% for recipe in recipes %}
+            recipes.push(new Recipe({{ recipe.id }}, "{{ recipe.name | raw }}", "{{ recipe.picture }}"));
         {% endfor %}
 
         // document.querySelector('table').style.display = '';
 
+        {#
         const app = new Vue({
             delimiters: ['${', '}'],
             el: '#app',
@@ -71,6 +90,28 @@
             computed: {
                 filteredList() {
                     return this.recipeList.filter(recipe => recipe.title.toLowerCase().includes(this.search.toLowerCase()));
+                }
+            }
+        });
+        #}
+
+        // ES5
+        'use strict';
+
+        var app = new Vue({
+            delimiters: ['${', '}'],
+            el: '#app',
+            data: {
+                search: '',
+                recipeList: recipes,
+            },
+            computed: {
+                filteredList : function filteredList() {
+                    var _this = this;
+
+                    return this.recipeList.filter(function(recipe) {
+                        return recipe.title.toLowerCase().includes(_this.search.toLowerCase());
+                    });
                 }
             }
         });
