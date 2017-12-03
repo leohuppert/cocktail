@@ -97,8 +97,12 @@ class Fixtures extends Fixture
             $pictureName = preg_replace('/[^a-zA-Z0-9\/_|+ .-]/', '', $pictureName);
             $pictureName .= '.jpg';
 
-            file_exists('web/assets/pictures/' . $pictureName) ? $recipe->setPicture($pictureName) : $recipe->setPicture('default.png');
+            // Méthode en "dur"
+            //file_exists('web/assets/pictures/' . $pictureName) ? $recipe->setPicture($pictureName) : $recipe->setPicture('default.png');
 
+            // Test de l'existence de l'image pour la recette
+            // en utilisant un paramètre défini dans parameters.yml
+            file_exists($this->container->getParameter('pictures_directory') . $pictureName) ? $recipe->setPicture($pictureName) : $recipe->setPicture('default.png');
 
             // On ajoute à la recette en cours les aliments qui la composent
             foreach ($value['index'] as $aliment) {
