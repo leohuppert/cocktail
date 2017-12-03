@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AlimentController extends Controller
 {
     /**
-     * Lists all aliment entities.
+     * Liste tous les aliments
      *
      * @Route("/", name="aliment_index")
      * @Method("GET")
@@ -36,7 +36,7 @@ class AlimentController extends Controller
     }
 
     /**
-     * Finds and displays a aliment entity.
+     * Affiche un aliment et les recettes qui en dépendent + ses sous aliments
      *
      * @Route("/{id}", name="aliment_show")
      * @Method("GET")
@@ -66,7 +66,7 @@ class AlimentController extends Controller
     }
 
     /**
-     * Returns an array containing the breadcrumb to display.
+     * Retourne un tableau contenant le fil d'ariane
      *
      * @param Aliment $aliment
      * @return array
@@ -91,7 +91,7 @@ class AlimentController extends Controller
     }
 
     /**
-     * Returns the breadcrumb from data in session.
+     * Retourne le fil d'ariane stocké en session
      * @param Aliment $aliment
      * @param array $sessionBreadcrumb
      * @return array
@@ -141,7 +141,7 @@ class AlimentController extends Controller
     }
 
     /**
-     * Returns a breadcrumb to display by default.
+     * Retourne un fil d'ariane à afficher par défaut
      * @param Aliment $aliment
      * @param array $res
      * @return array

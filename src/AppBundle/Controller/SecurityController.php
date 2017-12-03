@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class SecurityController extends Controller
 {
     /**
+     * Connecte un utilisateur
+     *
      * @Route("/login", name="login")
      * @return Response
      */
@@ -36,6 +38,8 @@ class SecurityController extends Controller
     }
 
     /**
+     * Enregistre un utilisateur
+     *
      * @Route("/register", name="register")
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
@@ -70,6 +74,8 @@ class SecurityController extends Controller
     }
 
     /**
+     * Modifie les informations d'un utilisateur
+     *
      * @param Request $request
      * @param User $user
      * @return Response

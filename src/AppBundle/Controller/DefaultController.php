@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class DefaultController extends Controller
 {
     /**
+     * Affiche la page d'accueil
+     *
      * @Route("/", name="homepage")
      */
     public function indexAction()

@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component
 class RecipeController extends Controller
 {
     /**
-     * Lists all recipe entities.
+     * Liste toutes les recettes
      *
      * @Route("/", name="recipe_index")
      * @Method("GET")
@@ -35,6 +35,8 @@ class RecipeController extends Controller
     }
 
     /**
+     * Affiche les recettes favorites
+     *
      * @Route("/favorites", name="recipe_favorites")
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -71,6 +73,8 @@ class RecipeController extends Controller
     }
 
     /**
+     * Ajoute en favori en session
+     *
      * @Route("/add-session-favorite/{id}", name="recipe_add_session_favorite")
      * @Method({"GET", "POST"})
      * @param Recipe $recipe
@@ -99,6 +103,8 @@ class RecipeController extends Controller
     }
 
     /**
+     * Supprime une recette des favoris en session
+     *
      * @Route("/remove-session-favorite/{id}", name="recipe_remove_session_favorite")
      * @Method({"GET", "POST"})
      * @param Recipe  $recipe
@@ -137,6 +143,8 @@ class RecipeController extends Controller
     }
 
     /**
+     * Ajoute une recette en favori en BDD
+     *
      * @Route("/add-user-favorite/{id}", name="recipe_add_user_favorite")
      * @Method({"GET", "POST"})
      * @param Recipe $recipe
@@ -163,6 +171,8 @@ class RecipeController extends Controller
     }
 
     /**
+     * Supprime en BDD une recette favorite
+     *
      * @Route("/remove-user-favorite/{id}", name="recipe_remove_user_favorite")
      * @Method({"GET", "POST"})
      * @param Recipe $recipe
@@ -194,11 +204,12 @@ class RecipeController extends Controller
     }
 
     /**
-     * Finds and displays a recipe entity.
+     * Affiche une recette
      *
      * @Route("/{id}", name="recipe_show", options={"expose" = true})
      * @Method("GET")
      * @param Recipe $recipe
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Recipe $recipe, Request $request)

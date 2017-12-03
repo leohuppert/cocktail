@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class ConfigController extends Controller
 {
     /**
+     * Charge la BDD
+     *
      * @Route("/install")
      *
      * @param KernelInterface $kernel
