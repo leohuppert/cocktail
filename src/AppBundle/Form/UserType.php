@@ -55,7 +55,7 @@ class UserType extends AbstractType
                 'label'    => 'Date de naissance',
                 'required' => false,
                 'years'    => range(date('Y')-70, date('Y')),
-                'format'   => 'dd-MM-yyyy',
+                'format'   => 'd-MMMM-yyyy',
             ))
             ->add('address', TextType::class, array(
                 'label'    => 'Adresse',

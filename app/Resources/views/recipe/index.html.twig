@@ -41,19 +41,6 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
 
-        {#
-        class Recipe {
-            constructor(id, title, picture) {
-                this.id = id;
-                this.title = title;
-                //this.picture = '/assets/pictures/' + picture;
-                this.picture = '{{ asset('assets/pictures/') }}' + picture;
-                this.link = Routing.generate('recipe_show', {id: this.id});
-                this.shortTitle = this.title.length > 20 ? this.title.substr(0, 20) + '...' : this.title;
-            }
-        }
-        #}
-
         // ES5
         function Recipe(id, title, picture) {
             this.id = id;
@@ -66,34 +53,10 @@
         // let recipes = [];
         var recipes = [];
 
-        {#
-        {% for recipe in recipes %}
-            recipes.push(new Recipe({{ recipe.id }}, `{{ recipe.name | raw }}`, `{{ recipe.picture }}`));
-        {% endfor %}
-        #}
-
         // ES5
         {% for recipe in recipes %}
             recipes.push(new Recipe({{ recipe.id }}, "{{ recipe.name | raw }}", "{{ recipe.picture }}"));
         {% endfor %}
-
-        // document.querySelector('table').style.display = '';
-
-        {#
-        const app = new Vue({
-            delimiters: ['${', '}'],
-            el: '#app',
-            data: {
-                search: '',
-                recipeList: recipes,
-            },
-            computed: {
-                filteredList() {
-                    return this.recipeList.filter(recipe => recipe.title.toLowerCase().includes(this.search.toLowerCase()));
-                }
-            }
-        });
-        #}
 
         // ES5
         'use strict';
