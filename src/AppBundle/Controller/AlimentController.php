@@ -58,10 +58,13 @@ class AlimentController extends Controller
             }
         }
 
+        $filteredRecipes = array_unique($filteredRecipes);
+        sort($filteredRecipes);
+
         return $this->render('aliment/show.html.twig', array(
             'aliment'        => $aliment,
             'super_aliments' => $superAliments,
-            'recipes'        => array_unique($filteredRecipes),
+            'recipes'        => $filteredRecipes,
         ));
     }
 
