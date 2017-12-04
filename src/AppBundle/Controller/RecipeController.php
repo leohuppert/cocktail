@@ -237,7 +237,6 @@ class RecipeController extends Controller
 
         // route
         $previousUrl = $request->headers->get('referer');
-        dump($previousUrl);
 
         if (preg_match('/^.*\/recipe\/.*/', $previousUrl)) {
 
