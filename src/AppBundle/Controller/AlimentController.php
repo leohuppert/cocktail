@@ -45,6 +45,10 @@ class AlimentController extends Controller
      */
     public function showAction(Aliment $aliment)
     {
+        if ($this->get('session')->get('previousRoute') !== null) {
+            $this->get('session')->remove('previousRoute');
+        }
+
         $superAliments = $this->getBreadcrumb($aliment);
 
         $subAliments = $this->getSubAliments2($aliment);

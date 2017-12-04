@@ -64,7 +64,7 @@
                 {% if previous_route == 'index' %}
                     {{ path('recipe_index') }}
                 {% else %}
-                    {{ app.request.headers.get('referer') }}
+                    {{ previous_route }}
                 {% endif %}
                 ">Retour sur la liste</a>
         </div>

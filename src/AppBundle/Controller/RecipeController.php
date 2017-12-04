@@ -23,6 +23,10 @@ class RecipeController extends Controller
      */
     public function indexAction()
     {
+        if ($this->get('session')->get('previousRoute') !== null) {
+            $this->get('session')->remove('previousRoute');
+        }
+
         $em = $this->getDoctrine()
             ->getManager();
 
@@ -233,11 +237,19 @@ class RecipeController extends Controller
 
         // route
         $previousUrl = $request->headers->get('referer');
+        dump($previousUrl);
 
         if (preg_match('/^.*\/recipe\/.*/', $previousUrl)) {
-            $previousRoute = 'index';
+
+            if ($this->get('session')->get('previousRoute') !== null) {
+                $previousRoute = $this->get('session')->get('previousRoute');
+            } else {
+                $previousRoute = 'index';
+            }
         } else {
-            $previousRoute = 'aliment';
+            $previousRoute = $previousUrl;
+
+            $this->get('session')->set('previousRoute', $previousUrl);
         }
 
         return $this->render('recipe/show.html.twig', array(
