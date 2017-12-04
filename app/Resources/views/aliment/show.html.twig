@@ -32,11 +32,6 @@
     <h4>Liste des recettes correspondantes</h4>
 
     <div id="app">
-
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="Filter par nom..." v-model="search">
-        </div>
-
         <div class="wrapper" id="list" style="display: none;">
             <div class="cocktail" v-for="recipe in filteredList">
                 <a v-bind:href="recipe.link" v-bind:title="recipe.title">
@@ -92,7 +87,7 @@
             el: '#app',
             data: {
                 search: '',
-                recipeList: recipes,
+                recipeList: recipes
             },
             computed: {
                 filteredList : function filteredList() {
